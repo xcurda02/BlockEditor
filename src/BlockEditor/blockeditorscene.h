@@ -6,15 +6,23 @@
 
 class BlockEditorScene : public QGraphicsScene
 {
+    Q_OBJECT
 public:
-    enum Mode {InsertBlock, InsertWire, MoveItem};
-
-
+    enum Mode {InsertBlock, InsertWire, MoveBlock};
     explicit BlockEditorScene(QObject *parent=0);
+
+public slots:
+    void setMode(Mode mode);
+
+signals:
+    void blockInserted(Block *block);
 
 private:
     Mode mode;
     Block::BlockType blockType;
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
 };
 
 #endif // BLOCKEDITORSCENE_H

@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
     createToolBar();
     scene = new BlockEditorScene(this);
     scene->setSceneRect(QRectF(0, 0, 5000, 5000));
+    connect(scene, SIGNAL(blockInserted(Block*)),
+                this, SLOT(blockInserted(Block*)));
 
     view = new QGraphicsView(scene);
     QHBoxLayout *layout = new QHBoxLayout;
@@ -117,9 +119,13 @@ void MainWindow::createToolBar(){
 void MainWindow::blockButtonClicked(int button_id){
 
     qInfo() << "button clicked: id" << button_id;
-    /*
-        TODO: nastaveni modu
-    */
+    scene->setMode(BlockEditorScene::InsertBlock);
+}
+
+void MainWindow::blockInserted(Block *block){
+    pointerTypeGroup->button(int(Buttons::moveButton))->setChecked(true);
+    scene->setMode(BlockEditorScene::Mode(pointerTypeGroup->checkedId()));
+    blocksButtonGroup->button(int(block->getBlockType()))->setChecked(false);
 }
 
 

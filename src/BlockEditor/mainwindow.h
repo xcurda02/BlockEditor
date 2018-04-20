@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "block.h"
 
 class BlockEditorScene;
 
@@ -27,6 +28,7 @@ public:
 
 private slots:
 
+    void blockInserted(Block *block);
     void blockButtonClicked(int button);
 
 
