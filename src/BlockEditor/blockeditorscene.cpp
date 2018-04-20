@@ -14,6 +14,10 @@ void BlockEditorScene::setMode(Mode mode){
     this->mode = mode;
 }
 
+void BlockEditorScene::setBlockType(Block::BlockType blockType){
+    this->blockType = blockType;
+}
+
 void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
     if (mouseEvent->button() == Qt::LeftButton){
         switch(mode){

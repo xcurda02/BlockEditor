@@ -33,7 +33,7 @@ private slots:
 
 
 private:
-    enum Buttons {addButton, subButton, divButton, mulButton, stepButton, runButton, moveButton, wireButton};
+    enum Buttons {addButton, subButton, mulButton, divButton, stepButton, runButton, moveButton, wireButton};
 
     Ui::MainWindow *ui;
 

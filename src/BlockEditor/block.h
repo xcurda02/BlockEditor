@@ -6,7 +6,7 @@
 class Block : public QGraphicsPixmapItem
 {
 public:
-    enum BlockType {addBlock, subBlock, divBlock, mulBlock};
+    enum BlockType {addBlock, subBlock, mulBlock, divBlock};
     Block(BlockType blockType, QGraphicsItem *parent = 0);
     BlockType getBlockType();
 protected:

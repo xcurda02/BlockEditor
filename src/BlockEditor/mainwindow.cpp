@@ -120,6 +120,7 @@ void MainWindow::blockButtonClicked(int button_id){
 
     qInfo() << "button clicked: id" << button_id;
     scene->setMode(BlockEditorScene::InsertBlock);
+    scene->setBlockType(Block::BlockType(button_id));
 }
 
 void MainWindow::blockInserted(Block *block){
