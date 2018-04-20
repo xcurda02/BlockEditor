@@ -27,6 +27,8 @@ public:
 
 private slots:
 
+    void blockButtonClicked(int button);
+
 
 private:
     enum Buttons {addButton, subButton, divButton, mulButton, stepButton, runButton, moveButton, wireButton};
@@ -48,7 +50,6 @@ private:
 
     void createToolBox();
     void createToolBar();
-    //void blockButtonClicked(int button);
     QAbstractButton *createBlockButton(const QString &text, Buttons buttonType);
 
 };

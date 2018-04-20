@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/addBlock.png</file>
+        <file>images/divBlock.png</file>
+        <file>images/mulBlock.png</file>
+        <file>images/subBlock.png</file>
+    </qresource>
+</RCC>

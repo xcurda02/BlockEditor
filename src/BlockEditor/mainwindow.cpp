@@ -1,4 +1,6 @@
 #include <QtWidgets>
+#include <QTextStream>
+#include <QtCore>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "blockeditorscene.h"
@@ -43,10 +45,15 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+/**
+ * @brief MainWindow::createToolBox
+ */
 void MainWindow::createToolBox(){
     blocksButtonGroup = new QButtonGroup(this);
-    blocksButtonGroup->setExclusive(false);
+    //blocksButtonGroup->setExclusive(false);
     /* TODO: osetrit klikani */
+    connect(blocksButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(blockButtonClicked(int)));
 
     QGridLayout *gridLayout = new QGridLayout;
 
@@ -106,10 +113,14 @@ void MainWindow::createToolBar(){
     toolBar->addWidget(stepButton);
     toolBar->addWidget(runButton);
 }
-/*
-void MainWindow::blockButtonClicked(int button){
 
-}*/
+void MainWindow::blockButtonClicked(int button_id){
+
+    qInfo() << "button clicked: id" << button_id;
+    /*
+        TODO: nastaveni modu
+    */
+}
 
 
 
@@ -117,8 +128,27 @@ QAbstractButton *MainWindow::createBlockButton(const QString &text, Buttons butt
 
     QToolButton *button = new QToolButton;
 
-    button->setText(text);
-    button->setIconSize(QSize(50,50));
+
+
+    QPixmap pixmap;
+    switch(buttonType){
+        case addButton:
+            pixmap = QPixmap(":/images/images/addBlock.png");
+            break;
+        case subButton:
+            pixmap = QPixmap(":/images/images/subBlock.png");
+            break;
+        case mulButton:
+            pixmap = QPixmap(":/images/images/mulBlock.png");
+            break;
+        case divButton:
+            pixmap = QPixmap(":/images/images/divBlock.png");
+            break;
+    }
+
+    QIcon ButtonIcon(pixmap);
+    button->setIcon(ButtonIcon);
+    button->setIconSize(QSize(65,65));
     button->setCheckable(true);
     button->setMinimumSize(60,60);
     blocksButtonGroup->addButton(button, int(buttonType));

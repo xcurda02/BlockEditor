@@ -11,6 +11,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = BlockEditor
 TEMPLATE = app
 
+CONFIG += console
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -26,11 +28,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    blockeditorscene.cpp
+    blockeditorscene.cpp \
+    block.cpp
 
 HEADERS += \
         mainwindow.h \
-    blockeditorscene.h
+    blockeditorscene.h \
+    block.h
 
 FORMS += \
         mainwindow.ui
+
+RESOURCES += \
+    resources_file.qrc
