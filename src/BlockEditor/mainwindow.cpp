@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createToolBox();
     createToolBar();
     scene = new BlockEditorScene(this);
-    scene->setSceneRect(QRectF(0, 0, 5000, 5000));
+    scene->setSceneRect(QRectF(0, 0, 500, 500));
     connect(scene, SIGNAL(blockInserted(Block*)),
                 this, SLOT(blockInserted(Block*)));
 
@@ -24,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     vlayout->addWidget(toolBar);
     vlayout->addWidget(toolBox);
+
+
 
 
     QWidget *leftPanelWidget = new QWidget;
@@ -124,6 +126,7 @@ void MainWindow::blockButtonClicked(int button_id){
 }
 
 void MainWindow::blockInserted(Block *block){
+    qInfo() << "scene items: " << scene->items().count();
     pointerTypeGroup->button(int(Buttons::moveButton))->setChecked(true);
     scene->setMode(BlockEditorScene::Mode(pointerTypeGroup->checkedId()));
     blocksButtonGroup->button(int(block->getBlockType()))->setChecked(false);

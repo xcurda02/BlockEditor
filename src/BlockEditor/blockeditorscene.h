@@ -3,6 +3,7 @@
 
 #include <QGraphicsScene>
 #include "block.h"
+#include "port.h"
 
 class BlockEditorScene : public QGraphicsScene
 {
@@ -22,9 +23,11 @@ signals:
 private:
     Mode mode;
     Block::BlockType blockType;
+    QGraphicsLineItem *wire;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    //void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
 };
 
 #endif // BLOCKEDITORSCENE_H

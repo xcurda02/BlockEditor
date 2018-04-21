@@ -29,12 +29,14 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     blockeditorscene.cpp \
-    block.cpp
+    block.cpp \
+    port.cpp
 
 HEADERS += \
         mainwindow.h \
     blockeditorscene.h \
-    block.h
+    block.h \
+    port.h
 
 FORMS += \
         mainwindow.ui
