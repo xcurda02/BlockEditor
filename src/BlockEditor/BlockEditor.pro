@@ -30,13 +30,15 @@ SOURCES += \
         mainwindow.cpp \
     blockeditorscene.cpp \
     block.cpp \
-    port.cpp
+    port.cpp \
+    wire.cpp
 
 HEADERS += \
         mainwindow.h \
     blockeditorscene.h \
     block.h \
-    port.h
+    port.h \
+    wire.h
 
 FORMS += \
         mainwindow.ui
