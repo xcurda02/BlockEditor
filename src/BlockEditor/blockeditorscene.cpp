@@ -31,7 +31,7 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 double blockTopEdge = abs(block->boundingRect().topRight().x() - block->boundingRect().topLeft().x());
                 double margin = blockTopEdge / (portCount+1);
                 for(int i = 1; i < portCount+1; i++){
-                    Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(i*margin),mouseEvent->scenePos().y()));
+                    Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(i*margin),mouseEvent->scenePos().y()-5));
                     addItem(port);
                     block->addPort(port);
                 }

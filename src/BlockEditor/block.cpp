@@ -40,12 +40,15 @@ void Block::addPort(Port *port){
 QVariant Block::itemChange(GraphicsItemChange change, const QVariant & value){
     if(change == QGraphicsItem::ItemPositionChange){
         qInfo() << "(block)block pos changed x: " << this->x() << " y:" << this->y();
-        /*if (port != nullptr){
 
-           //port->setPos(20,20);
-            port->setPos(x()+20,y()+20);
+        double blockTopEdge = abs(boundingRect().topRight().x() - boundingRect().topLeft().x());
+        double margin = blockTopEdge / (ports.count()+1);
+
+        for (int i = 1; i < ports.count()+1; i++){
+            Port *port = ports[i-1];
+            port->setPos(QPointF(x()+(i*margin),y()-5));
             qInfo() << "(block)port pos chanded x:" << port->x() << " y:" << port->y();
-        }*/
+        }
     }
     return value;
 }
