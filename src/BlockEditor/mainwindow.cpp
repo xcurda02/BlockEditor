@@ -6,6 +6,7 @@
 #include "blockeditorscene.h"
 
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -63,10 +64,10 @@ void MainWindow::createToolBox(){
 
 
 
-    gridLayout->addWidget(createBlockButton("+",Buttons::addButton),0,0);
-    gridLayout->addWidget(createBlockButton("-",Buttons::subButton),0,1);
-    gridLayout->addWidget(createBlockButton("*",Buttons::mulButton),1,0);
-    gridLayout->addWidget(createBlockButton("/",Buttons::divButton),1,1);
+    gridLayout->addWidget(createBlockButton("+",addButton),0,0);
+    gridLayout->addWidget(createBlockButton("-",subButton),0,1);
+    gridLayout->addWidget(createBlockButton("*",mulButton),1,0);
+    gridLayout->addWidget(createBlockButton("/",divButton),1,1);
 
     gridLayout->setRowStretch(3, 10);
     gridLayout->setColumnStretch(2, 10);
@@ -83,39 +84,39 @@ void MainWindow::createToolBox(){
 
 void MainWindow::createToolBar(){
 
-    QToolButton *moveButton = new QToolButton;
-    moveButton->setCheckable(true);
-    moveButton->setChecked(true);
-    moveButton->setText("M");
+    QToolButton *objMoveButton = new QToolButton;
+    objMoveButton->setCheckable(true);
+    objMoveButton->setChecked(true);
+    objMoveButton->setText("M");
 
-    QToolButton *wireButton = new QToolButton;
-    wireButton->setCheckable(true);
-    wireButton->setText("W");
+    QToolButton *objWireButton = new QToolButton;
+    objWireButton->setCheckable(true);
+    objWireButton->setText("W");
 
     pointerTypeGroup = new QButtonGroup(this);
-    pointerTypeGroup->addButton(moveButton, int(Buttons::moveButton));
-    pointerTypeGroup->addButton(wireButton, int(Buttons::wireButton));
+    pointerTypeGroup->addButton(objMoveButton, int(moveButton));
+    pointerTypeGroup->addButton(objWireButton, int(wireButton));
      /* TODO connect*/
 
-    QToolButton *stepButton = new QToolButton;
-    stepButton->setText("S");
+    QToolButton *objStepButton = new QToolButton;
+    objStepButton->setText("S");
 
-    QToolButton *runButton = new QToolButton;
-    runButton->setText("R");
+    QToolButton *objRunButton = new QToolButton;
+    objRunButton->setText("R");
 
     actionTypeGroup = new QButtonGroup(this);
-    actionTypeGroup->addButton(stepButton, int(Buttons::stepButton));
-    actionTypeGroup->addButton(runButton, int(Buttons::runButton));
+    actionTypeGroup->addButton(objStepButton, int(stepButton));
+    actionTypeGroup->addButton(objRunButton, int(runButton));
 
 
 
 
 
     toolBar = addToolBar(tr("ToolBar"));
-    toolBar->addWidget(moveButton);
-    toolBar->addWidget(wireButton);
-    toolBar->addWidget(stepButton);
-    toolBar->addWidget(runButton);
+    toolBar->addWidget(objMoveButton);
+    toolBar->addWidget(objWireButton);
+    toolBar->addWidget(objStepButton);
+    toolBar->addWidget(objRunButton);
 }
 
 void MainWindow::blockButtonClicked(int button_id){
@@ -127,14 +128,14 @@ void MainWindow::blockButtonClicked(int button_id){
 
 void MainWindow::blockInserted(Block *block){
     qInfo() << "scene items: " << scene->items().count();
-    pointerTypeGroup->button(int(Buttons::moveButton))->setChecked(true);
+    pointerTypeGroup->button(int(moveButton))->setChecked(true);
     scene->setMode(BlockEditorScene::Mode(pointerTypeGroup->checkedId()));
     blocksButtonGroup->button(int(block->getBlockType()))->setChecked(false);
 }
 
 
 
-QAbstractButton *MainWindow::createBlockButton(const QString &text, Buttons buttonType){
+QAbstractButton *MainWindow::createBlockButton(const QString &text, int buttonType){
 
     QToolButton *button = new QToolButton;
 

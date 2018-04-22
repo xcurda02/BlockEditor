@@ -33,7 +33,7 @@ private slots:
 
 
 private:
-    enum Buttons {addButton, subButton, mulButton, divButton, stepButton, runButton, moveButton, wireButton};
+    enum {addButton, subButton, mulButton, divButton, stepButton, runButton, moveButton, wireButton};
 
     Ui::MainWindow *ui;
 
@@ -52,7 +52,7 @@ private:
 
     void createToolBox();
     void createToolBar();
-    QAbstractButton *createBlockButton(const QString &text, Buttons buttonType);
+    QAbstractButton *createBlockButton(const QString &text, int buttonType);
 
 };
 
