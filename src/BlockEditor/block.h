@@ -12,7 +12,8 @@ public:
     Block(BlockType blockType, QGraphicsItem *parent = 0);
     BlockType getBlockType();
     void addPort(Port *port);
-    Port *port;
+private:
+    QList<Port*> ports;
 protected:
     BlockType blockType;
     QVariant itemChange(GraphicsItemChange change, const QVariant & value);

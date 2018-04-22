@@ -1,6 +1,7 @@
 #include "blockeditorscene.h"
 #include "port.h"
 #include <QGraphicsSceneMouseEvent>
+#include <QtMath>
 
 
 BlockEditorScene::BlockEditorScene(QObject *parent) : QGraphicsScene(parent)
@@ -24,12 +25,17 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
             case InsertBlock:
                 Block *block = new Block(blockType);
                 addItem(block);
-                Port *port = new Port(mouseEvent->scenePos());
-
                 block->setPos(mouseEvent->scenePos());
 
-                addItem(port);
-                block->addPort(port);
+                int portCount = 5;
+                double blockTopEdge = abs(block->boundingRect().topRight().x() - block->boundingRect().topLeft().x());
+                double margin = blockTopEdge / (portCount+1);
+                for(int i = 1; i < portCount+1; i++){
+                    Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(i*margin),mouseEvent->scenePos().y()));
+                    addItem(port);
+                    block->addPort(port);
+                }
+
 
                 emit blockInserted(block);
                 break;

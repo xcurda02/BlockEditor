@@ -3,7 +3,7 @@
 
 Block::Block(BlockType blockType, QGraphicsItem *parent): QGraphicsPixmapItem(parent)
 {
-    port = nullptr;
+
     this->blockType =  blockType;
     QPixmap pixmap;
     switch(blockType){
@@ -34,18 +34,18 @@ Block::BlockType Block::getBlockType(){
 }
 
 void Block::addPort(Port *port){
-    this->port = port;
+    ports.append(port);
 }
 
 QVariant Block::itemChange(GraphicsItemChange change, const QVariant & value){
     if(change == QGraphicsItem::ItemPositionChange){
         qInfo() << "(block)block pos changed x: " << this->x() << " y:" << this->y();
-        if (port != nullptr){
+        /*if (port != nullptr){
 
            //port->setPos(20,20);
             port->setPos(x()+20,y()+20);
             qInfo() << "(block)port pos chanded x:" << port->x() << " y:" << port->y();
-        }
+        }*/
     }
     return value;
 }

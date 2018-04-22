@@ -11,6 +11,8 @@ public:
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
 };
 
 #endif // PORT_H
