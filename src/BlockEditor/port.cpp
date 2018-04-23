@@ -22,6 +22,11 @@ QVariant Port::itemChange(GraphicsItemChange change, const QVariant & value){
     return value;
 }
 
+void Port::addWire(Wire *wire){
+    wires.append(wire);
+}
+
+
 void Port::hoverEnterEvent(QGraphicsSceneHoverEvent * event){
      qInfo() << "Hover Enter:";
      QRectF rec = boundingRect();

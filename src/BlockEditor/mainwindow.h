@@ -30,7 +30,7 @@ private slots:
 
     void blockInserted(Block *block);
     void blockButtonClicked(int button);
-
+    void pointerGroupClicked(int id);
 
 private:
     enum {addButton, subButton, mulButton, divButton, stepButton, runButton, moveButton, wireButton};

@@ -82,6 +82,13 @@ void MainWindow::createToolBox(){
 
 }
 
+//pridano
+void MainWindow::pointerGroupClicked(int)
+{
+    //pro tlacitka Move(ID=6) a Wire(ID=7) v mnozine mode MoveBlock(1) InsertWire(2) proto -5 k ID
+    scene->setMode(BlockEditorScene::Mode(pointerTypeGroup->checkedId()-5));
+}
+
 void MainWindow::createToolBar(){
 
     QToolButton *objMoveButton = new QToolButton;
@@ -96,7 +103,11 @@ void MainWindow::createToolBar(){
     pointerTypeGroup = new QButtonGroup(this);
     pointerTypeGroup->addButton(objMoveButton, int(moveButton));
     pointerTypeGroup->addButton(objWireButton, int(wireButton));
-     /* TODO connect*/
+
+    //pridano
+    connect(pointerTypeGroup, SIGNAL(buttonClicked(int)),
+            this, SLOT(pointerGroupClicked(int)));
+
 
     QToolButton *objStepButton = new QToolButton;
     objStepButton->setText("S");

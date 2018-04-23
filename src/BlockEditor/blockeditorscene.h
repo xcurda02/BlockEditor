@@ -9,7 +9,7 @@ class BlockEditorScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    enum Mode {InsertBlock, InsertWire, MoveBlock};
+    enum Mode {InsertBlock, MoveBlock, InsertWire};
     explicit BlockEditorScene(QObject *parent=0);
 
 
@@ -26,8 +26,9 @@ private:
     QGraphicsLineItem *wire;
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    //void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
 };
 
 #endif // BLOCKEDITORSCENE_H

@@ -21,18 +21,17 @@ QT_END_NAMESPACE
 
 
 
-class wire : public QGraphicsLineItem
+class Wire : public QGraphicsLineItem
 {
 public:
-    wire(Port *startItem,  Port *endItem, QGraphicsItem *parent = 0);
+    Wire(Port *startItem,  Port *endItem, QGraphicsItem *parent = 0);
 
     int type() const Q_DECL_OVERRIDE { return Type; }
     QRectF boundingRect() const Q_DECL_OVERRIDE;
-    QPainterPath shape() const Q_DECL_OVERRIDE;
+    //QPainterPath shape() const Q_DECL_OVERRIDE;
     void setColor(const QColor &color) { myColor = color; }
     Port *startItem() const { return myStartItem; }
     Port *endItem() const { return myEndItem; }
-
     void updatePosition();
 
 protected:
