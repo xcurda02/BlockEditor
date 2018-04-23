@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createToolBox();
     createToolBar();
     scene = new BlockEditorScene(this);
-    scene->setSceneRect(QRectF(0, 0, 500, 500));
+    scene->setSceneRect(QRectF(-200, -200, 400, 400));
     connect(scene, SIGNAL(blockInserted(Block*)),
                 this, SLOT(blockInserted(Block*)));
 

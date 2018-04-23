@@ -4,6 +4,7 @@
 
 Port::Port(QPointF blockPos, QGraphicsItem *parent) : QGraphicsEllipseItem(parent)
 {
+    qInfo() << "port created at (" << blockPos.x() << ";" << blockPos.y();
     setRect(blockPos.x(),blockPos.y(),10,10);
     QBrush brush(Qt::gray);
     setBrush(brush);
@@ -25,7 +26,7 @@ void Port::hoverEnterEvent(QGraphicsSceneHoverEvent * event){
      qInfo() << "Hover Enter:";
      QRectF rec = boundingRect();
      qInfo() << "old bounding rect x:" << rec.x() << "y:" << rec.y();
-     setRect(rec.x()+0.5, rec.y()+0.5,15,15);
+     setRect(rec.x()-1.5, rec.y()-1.5,15,15);
      qInfo() << "new bounding rect x:" << boundingRect().x() << "y:" << boundingRect().y();
      QBrush brush(Qt::green);
      setBrush(brush);
@@ -38,7 +39,7 @@ void Port::hoverLeaveEvent(QGraphicsSceneHoverEvent * event){
      qInfo() << "Hover Leave:";
      QRectF rec = boundingRect();
      qInfo() << "old bounding rect x:" << rec.x() << "y:" << rec.y();
-     setRect(rec.x()+0.5, rec.y()+0.5,10,10);
+     setRect(rec.x()+2.5, rec.y()+2.5,10,10);
      qInfo() << "new bounding rect x:" << boundingRect().x() << "y:" << boundingRect().y();
      QBrush brush(Qt::gray);
      setBrush(brush);
