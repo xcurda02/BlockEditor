@@ -9,14 +9,16 @@ class Port : public QGraphicsEllipseItem
 {
 
 public:
-    Port(QPointF blockPos, QGraphicsItem *parent=0);
+    Port(QPointF blockPos,bool inputPort, QGraphicsItem *parent=0);
     void addWire(Wire *wire);
     Wire *wire;
+    bool isInputPort();
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant & value);
     void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
 private:
+    bool inputPort;
 
 };
 

@@ -50,16 +50,20 @@ QVariant Block::itemChange(GraphicsItemChange change, const QVariant & value){
         double blockTopEdge = abs(boundingRect().topRight().x() - boundingRect().topLeft().x());
         qInfo() << "--(block)block top edge : " << blockTopEdge;
 
-        double margin = blockTopEdge / (ports.count()+1);
+        double margin = blockTopEdge / (ports.count());
 
         for (int i = 1; i < ports.count()+1; i++){
             Port *port = ports[i-1];
-            qInfo() << "setting port pos(" << x()+(i*margin) << "," << y()-5 << ")" ;
-            port->setRect(x()+(i*margin),y()-5,10,10);
 
-            qInfo() << "port xy: (" << port->boundingRect().topLeft().x() << "," << port->boundingRect().topLeft().y() << ")";
+            if (port->isInputPort()){
+                qInfo() << "setting port pos(" << x()+(i*margin) << "," << y()-5 << ")" ;
+                port->setRect(x()+(i*margin),y()-5,10,10);
 
-
+                qInfo() << "port xy: (" << port->boundingRect().topLeft().x() << "," << port->boundingRect().topLeft().y() << ")";
+            } else{
+                double blockHeight = abs(boundingRect().topRight().y() - boundingRect().bottomRight().y());
+                port->setRect(x()+(blockTopEdge/2),y()+blockHeight-5,10,10);
+            }
 
 
         }

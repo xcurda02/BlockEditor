@@ -39,11 +39,15 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 qInfo() << "--(block)block top edge : " << blockTopEdge;
                 double margin = (double) blockTopEdge / (double)(portCount+1);
                 for(int i = 1; i < portCount+1; i++){
-                    Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(i*margin),mouseEvent->scenePos().y()-5));
+                    Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(i*margin),mouseEvent->scenePos().y()-5),true);
                     port->setZValue(1001.0);
                     addItem(port);
                     block->addPort(port);
                 }
+                double blockHeight = abs(block->boundingRect().topRight().y() - block->boundingRect().bottomRight().y());
+                Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(blockTopEdge/2),mouseEvent->scenePos().y()+blockHeight-5),false);
+                addItem(port);
+                block->addPort(port);
 
 
                 emit blockInserted(block);

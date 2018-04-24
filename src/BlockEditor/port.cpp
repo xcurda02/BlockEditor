@@ -2,7 +2,7 @@
 #include <QBrush>
 #include "port.h"
 
-Port::Port(QPointF blockPos, QGraphicsItem *parent) : QGraphicsEllipseItem(parent)
+Port::Port(QPointF blockPos,bool inputPort, QGraphicsItem *parent) : QGraphicsEllipseItem(parent)
 {
     qInfo() << "port created at (" << blockPos.x() << ";" << blockPos.y();
     setRect(blockPos.x(),blockPos.y(),10,10);
@@ -14,6 +14,7 @@ Port::Port(QPointF blockPos, QGraphicsItem *parent) : QGraphicsEllipseItem(paren
     //setFlag(QGraphicsItem::ItemIsSelectable, true);
     setAcceptHoverEvents(true);
     wire = NULL;
+    this->inputPort = inputPort;
 }
 
 QVariant Port::itemChange(GraphicsItemChange change, const QVariant & value){
@@ -27,6 +28,10 @@ QVariant Port::itemChange(GraphicsItemChange change, const QVariant & value){
 
 void Port::addWire(Wire *wire){
     this->wire = wire;
+}
+
+bool Port::isInputPort(){
+    return inputPort;
 }
 
 
