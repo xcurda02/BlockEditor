@@ -26,6 +26,7 @@ class Wire : public QGraphicsLineItem
 public:
     Wire(Port *startItem,  Port *endItem, QGraphicsItem *parent = 0);
 
+    enum { Type = UserType +4};
     int type() const Q_DECL_OVERRIDE { return Type; }
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     //QPainterPath shape() const Q_DECL_OVERRIDE;

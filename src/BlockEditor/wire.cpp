@@ -4,6 +4,7 @@
 
 #include <QPen>
 #include <QPainter>
+#include <QDebug>
 
 const qreal Pi = 3.14;
 
@@ -38,7 +39,8 @@ QPainterPath Wire::shape() const
 
 void Wire::updatePosition()
 {
-    QLineF line(mapFromItem(myStartItem, 0, 0), mapFromItem(myEndItem, 0, 0));
+    QLineF line(QPointF(myStartItem->boundingRect().topLeft().x(),myStartItem->boundingRect().topLeft().y()), QPointF(myEndItem->boundingRect().topLeft().x(),myEndItem->boundingRect().topLeft().y()));
+    qInfo() << "updating position " << mapFromItem(myStartItem, 0, 0).x() <<","<< mapFromItem(myEndItem, 0, 0).x();
     setLine(line);
 }
 
@@ -56,7 +58,7 @@ void Wire::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 {
     QPen myPen = pen();
     painter->setBrush(Qt::black);
-    QLineF line(myStartItem->pos(), myEndItem->pos());
+    QLineF line(QPointF(myStartItem->boundingRect().topLeft().x(),myStartItem->boundingRect().topLeft().y()), QPointF(myEndItem->boundingRect().topLeft().x(),myEndItem->boundingRect().topLeft().y()));
     //QLineF line(161.0,195.0,1.0,1.0);
     painter->drawLine(line);
 }

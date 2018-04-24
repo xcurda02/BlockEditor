@@ -70,6 +70,7 @@ void BlockEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent){
         QLineF newLine(wire->line().p1(), mouseEvent->scenePos());
         wire->setLine(newLine);
     } else if (mode == MoveBlock){
+
         QGraphicsScene::mouseMoveEvent(mouseEvent);
     }
 }

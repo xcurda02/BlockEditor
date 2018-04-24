@@ -1,5 +1,6 @@
 #include <QDebug>
 #include <QBrush>
+#include "wire.h"
 #include "block.h"
 
 Block::Block(BlockType blockType, QGraphicsItem *parent): QGraphicsPixmapItem(parent)
@@ -56,8 +57,15 @@ QVariant Block::itemChange(GraphicsItemChange change, const QVariant & value){
             qInfo() << "setting port pos(" << x()+(i*margin) << "," << y()-5 << ")" ;
             port->setRect(x()+(i*margin),y()-5,10,10);
 
+            qInfo() << "port xy: (" << port->boundingRect().topLeft().x() << "," << port->boundingRect().topLeft().y() << ")";
 
 
+
+
+        }
+        foreach (Port *port, ports ) {
+            if (port->wire != nullptr)
+                port->wire->updatePosition();
         }
     }
     return value;

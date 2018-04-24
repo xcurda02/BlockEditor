@@ -11,6 +11,7 @@ Port::Port(QPointF blockPos, QGraphicsItem *parent) : QGraphicsEllipseItem(paren
     //setFlag(QGraphicsItem::ItemIsMovable, true);
     //setFlag(QGraphicsItem::ItemIsSelectable, true);
     setAcceptHoverEvents(true);
+    wire = nullptr;
 }
 
 QVariant Port::itemChange(GraphicsItemChange change, const QVariant & value){
@@ -23,7 +24,7 @@ QVariant Port::itemChange(GraphicsItemChange change, const QVariant & value){
 }
 
 void Port::addWire(Wire *wire){
-    wires.append(wire);
+    this->wire = wire;
 }
 
 
