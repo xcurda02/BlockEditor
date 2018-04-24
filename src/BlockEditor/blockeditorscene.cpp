@@ -40,6 +40,7 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 double margin = (double) blockTopEdge / (double)(portCount+1);
                 for(int i = 1; i < portCount+1; i++){
                     Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(i*margin),mouseEvent->scenePos().y()-5));
+                    port->setZValue(1001.0);
                     addItem(port);
                     block->addPort(port);
                 }
@@ -117,7 +118,7 @@ void BlockEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             endItem->addWire(wire);
 
             //urcuje, jestli bude wire nad nebo pod ostatnimy prvky v GrScene
-            wire->setZValue(-1000.0);
+            wire->setZValue(1000.0);
 
             //prida wire na GrScene
             addItem(wire);

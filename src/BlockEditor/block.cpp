@@ -64,7 +64,7 @@ QVariant Block::itemChange(GraphicsItemChange change, const QVariant & value){
 
         }
         foreach (Port *port, ports ) {
-            if (port->wire != nullptr)
+            if (port->wire != NULL)
                 port->wire->updatePosition();
         }
     }

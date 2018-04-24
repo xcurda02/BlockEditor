@@ -6,12 +6,14 @@ Port::Port(QPointF blockPos, QGraphicsItem *parent) : QGraphicsEllipseItem(paren
 {
     qInfo() << "port created at (" << blockPos.x() << ";" << blockPos.y();
     setRect(blockPos.x(),blockPos.y(),10,10);
+
+
     QBrush brush(Qt::gray);
     setBrush(brush);
     //setFlag(QGraphicsItem::ItemIsMovable, true);
     //setFlag(QGraphicsItem::ItemIsSelectable, true);
     setAcceptHoverEvents(true);
-    wire = nullptr;
+    wire = NULL;
 }
 
 QVariant Port::itemChange(GraphicsItemChange change, const QVariant & value){
