@@ -11,14 +11,21 @@ class Port : public QGraphicsEllipseItem
 public:
     Port(QPointF blockPos,bool inputPort, QGraphicsItem *parent=0);
     void addWire(Wire *wire);
-    Wire *wire;
+    Wire *getWire();
     bool isInputPort();
+    bool isValueSet();
+    void setValue(double value);
+
+
 protected:
-    QVariant itemChange(GraphicsItemChange change, const QVariant & value);
     void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
 private:
     bool inputPort;
+    bool valueSet;
+    double value;
+    Wire *wire;
+
 
 };
 

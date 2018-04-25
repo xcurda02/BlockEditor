@@ -15,6 +15,7 @@ Wire::Wire(Port *startItem,  Port *endItem, QGraphicsItem *parent)
        myEndItem = endItem;
        setFlag(QGraphicsItem::ItemIsSelectable, true);
        setPen(QPen(Qt::black, 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+       qInfo() << "wire created";
 }
 
 QRectF Wire::boundingRect() const
@@ -40,7 +41,6 @@ QPainterPath Wire::shape() const
 void Wire::updatePosition()
 {
     QLineF line(QPointF(myStartItem->boundingRect().topLeft().x(),myStartItem->boundingRect().topLeft().y()), QPointF(myEndItem->boundingRect().topLeft().x(),myEndItem->boundingRect().topLeft().y()));
-    qInfo() << "updating position " << mapFromItem(myStartItem, 0, 0).x() <<","<< mapFromItem(myEndItem, 0, 0).x();
     setLine(line);
 }
 
