@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QtWidgets>
+#include <QTextStream>
+#include <QtCore>
 #include "block.h"
 
 class BlockEditorScene;
@@ -42,6 +45,7 @@ private:
     QButtonGroup *actionTypeGroup;
     QToolBox *toolBox;
     QToolBar *toolBar;
+    QSpinBox *inputsSpinBox;
 
     QMenu *fileMenu;
     QMenu *aboutMenu;

@@ -13,9 +13,11 @@ public:
     explicit BlockEditorScene(QObject *parent=0);
 
 
+
 public slots:
     void setMode(Mode mode);
     void setBlockType(Block::BlockType blockType);
+    void setBlockInputs(int inputs);
 
 signals:
     void blockInserted(Block *block);
@@ -24,6 +26,7 @@ private:
     Mode mode;
     Block::BlockType blockType;
     QGraphicsLineItem *wire;
+    int blockInputs;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;

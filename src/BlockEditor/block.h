@@ -12,10 +12,12 @@ public:
     enum BlockType {addBlock, subBlock, mulBlock, divBlock};
     Block(BlockType blockType, QGraphicsItem *parent = 0);
     BlockType getBlockType();
+    Port *getOutPort();
     void addPort(Port *port);
     int type() const Q_DECL_OVERRIDE {return Type;}
 private:
     QList<Port*> ports;
+
 protected:
     BlockType blockType;
     QVariant itemChange(GraphicsItemChange change, const QVariant & value);

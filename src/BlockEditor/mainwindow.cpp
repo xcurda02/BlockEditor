@@ -1,6 +1,4 @@
-#include <QtWidgets>
-#include <QTextStream>
-#include <QtCore>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "blockeditorscene.h"
@@ -11,12 +9,17 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    createToolBox();
-    createToolBar();
+
     scene = new BlockEditorScene(this);
     scene->setSceneRect(QRectF(-200, -200, 400, 400));
+
     connect(scene, SIGNAL(blockInserted(Block*)),
                 this, SLOT(blockInserted(Block*)));
+
+    createToolBox();
+    createToolBar();
+    scene->setBlockInputs(inputsSpinBox->value());
+
 
     view = new QGraphicsView(scene);
     QHBoxLayout *layout = new QHBoxLayout;
@@ -68,6 +71,16 @@ void MainWindow::createToolBox(){
     gridLayout->addWidget(createBlockButton("-",subButton),0,1);
     gridLayout->addWidget(createBlockButton("*",mulButton),1,0);
     gridLayout->addWidget(createBlockButton("/",divButton),1,1);
+
+    inputsSpinBox = new QSpinBox;
+    inputsSpinBox->setValue(2);
+    connect(inputsSpinBox, SIGNAL(valueChanged(int)),scene , SLOT (setBlockInputs(int)));
+    QLabel *label = new QLabel;
+    label->setText(QString("Vstupy:"));
+
+    gridLayout->addWidget(label);
+    gridLayout->addWidget(inputsSpinBox);
+
 
     gridLayout->setRowStretch(3, 10);
     gridLayout->setColumnStretch(2, 10);
@@ -121,8 +134,6 @@ void MainWindow::createToolBar(){
 
 
 
-
-
     toolBar = addToolBar(tr("ToolBar"));
     toolBar->addWidget(objMoveButton);
     toolBar->addWidget(objWireButton);
@@ -147,11 +158,7 @@ void MainWindow::blockInserted(Block *block){
 
 
 QAbstractButton *MainWindow::createBlockButton(const QString &text, int buttonType){
-
     QToolButton *button = new QToolButton;
-
-
-
     QPixmap pixmap;
     switch(buttonType){
         case addButton:
