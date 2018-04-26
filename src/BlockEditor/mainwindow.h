@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QtCore>
 #include "block.h"
+#include "calculator.h"
 
 class BlockEditorScene;
 
@@ -32,8 +33,12 @@ public:
 private slots:
 
     void blockInserted(Block *block);
-    void blockButtonClicked(int button);
-    void pointerGroupClicked(int id);
+    void blockButtonClicked(int button_id);
+    void pointerGroupClicked(int button_id);
+
+
+    void actionTypeGroupClicked(int button_id);
+
 
 private:
     enum {addButton, subButton, mulButton, divButton, stepButton, runButton, moveButton, wireButton};
@@ -43,9 +48,13 @@ private:
     QButtonGroup *blocksButtonGroup;
     QButtonGroup *pointerTypeGroup;
     QButtonGroup *actionTypeGroup;
+
+
     QToolBox *toolBox;
     QToolBar *toolBar;
     QSpinBox *inputsSpinBox;
+
+    Calculator *calc;
 
     QMenu *fileMenu;
     QMenu *aboutMenu;

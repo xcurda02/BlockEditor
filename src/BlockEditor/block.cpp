@@ -44,6 +44,18 @@ Port *Block::getOutPort(){
 
 }
 
+void Block::setProcessed(){
+    processed = true;
+}
+
+void Block::setNotProcessed(){
+    processed = false;
+}
+
+bool Block::isProcessed(){
+    return processed;
+}
+
 QVariant Block::itemChange(GraphicsItemChange change, const QVariant & value){
     if(change == QGraphicsItem::ItemPositionChange){
 

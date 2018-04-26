@@ -46,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setCentralWidget(widget);
 
+    calc = new Calculator(scene);
+
 }
 
 MainWindow::~MainWindow()
@@ -122,15 +124,18 @@ void MainWindow::createToolBar(){
             this, SLOT(pointerGroupClicked(int)));
 
 
+    actionTypeGroup = new QButtonGroup(this);
     QToolButton *objStepButton = new QToolButton;
     objStepButton->setText("S");
 
     QToolButton *objRunButton = new QToolButton;
     objRunButton->setText("R");
 
-    actionTypeGroup = new QButtonGroup(this);
     actionTypeGroup->addButton(objStepButton, int(stepButton));
     actionTypeGroup->addButton(objRunButton, int(runButton));
+
+    connect(actionTypeGroup, SIGNAL(buttonClicked(int)), this, SLOT(actionTypeGroupClicked(int)));
+
 
 
 
@@ -140,6 +145,17 @@ void MainWindow::createToolBar(){
     toolBar->addWidget(objStepButton);
     toolBar->addWidget(objRunButton);
 }
+
+void MainWindow::actionTypeGroupClicked(int button_id){
+    if(button_id == stepButton){
+        if (calc->allBlocksProcessed())
+            qInfo()<<"all blocks processed";
+        else
+            qInfo()<<"NOT all blocks processed";
+    }
+
+}
+
 
 void MainWindow::blockButtonClicked(int button_id){
 

@@ -14,12 +14,18 @@ public:
     BlockType getBlockType();
     Port *getOutPort();
     void addPort(Port *port);
+    void setProcessed();
+    void setNotProcessed();
+    bool isProcessed();
     int type() const Q_DECL_OVERRIDE {return Type;}
 private:
     QList<Port*> ports;
+    bool processed;
+    BlockType blockType;
 
 protected:
-    BlockType blockType;
+
+
     QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 };
 

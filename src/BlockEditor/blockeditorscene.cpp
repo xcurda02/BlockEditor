@@ -24,6 +24,18 @@ void BlockEditorScene::setBlockInputs(int inputs){
     blockInputs = inputs;
 }
 
+QList<Block *> BlockEditorScene::getBlocks(){
+    QList<Block *> blocks;
+    foreach (QGraphicsItem *item, items()) {
+        if( item->type() == Block::Type){
+            qInfo() << "nalezen block";
+            blocks.append(qgraphicsitem_cast<Block *>(item));
+        }
+    }
+    return blocks;
+}
+
+
 void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
     if (mouseEvent->button() == Qt::LeftButton){
         switch(mode){

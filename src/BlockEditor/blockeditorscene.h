@@ -2,6 +2,7 @@
 #define BLOCKEDITORSCENE_H
 
 #include <QGraphicsScene>
+#include <QtCore>
 #include "block.h"
 #include "port.h"
 
@@ -11,7 +12,7 @@ class BlockEditorScene : public QGraphicsScene
 public:
     enum Mode {InsertBlock, MoveBlock, InsertWire};
     explicit BlockEditorScene(QObject *parent=0);
-
+    QList<Block *> getBlocks();
 
 
 public slots:
