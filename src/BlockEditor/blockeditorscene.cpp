@@ -32,6 +32,7 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 Block *block = new Block(blockType);
                 addItem(block);
                 block->setPos(mouseEvent->scenePos());
+                block->setZValue(1000.0);
 
 
                 double blockTopEdge = abs(block->boundingRect().topRight().x() - block->boundingRect().topLeft().x());
@@ -45,6 +46,7 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 }
                 double blockHeight = abs(block->boundingRect().topRight().y() - block->boundingRect().bottomRight().y());
                 Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(blockTopEdge/2),mouseEvent->scenePos().y()+blockHeight-5),false);
+                port->setZValue(1001.0);
                 addItem(port);
                 block->addPort(port);
 
@@ -58,6 +60,7 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
             case InsertWire:
                 wire = new QGraphicsLineItem(QLineF(mouseEvent->scenePos(), mouseEvent->scenePos()));
                 wire->setPen(QPen(Qt::black));
+                wire->setZValue(1001.0);
                 addItem(wire);
                 break;
 
@@ -92,41 +95,34 @@ void BlockEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         if (endItems.count() && endItems.first() == wire)
             endItems.removeFirst();
 
-        printf("wire->line().p1().x()");
-        printf("x begin - %f\n",wire->line().p1().x());
-        printf("x end - %f\n",wire->line().p2().x());
-
         removeItem(wire);
         delete wire;
-
         //kontrola jestli cara zacina i konci na portu a pripadne vytvoreni objektu
         if (startItems.count() > 0 && endItems.count() > 0 &&
             startItems.first()->type() == Port::Type &&
             endItems.first()->type() == Port::Type &&
-            startItems.first() != endItems.first()) {
+            startItems.first() != endItems.first() ) {
 
             Port *startItem = qgraphicsitem_cast<Port *>(startItems.first());
             Port *endItem = qgraphicsitem_cast<Port *>(endItems.first());
+            printf("%d %d\n",startItem->isInputPort(), endItem->isInputPort());
+            if(startItem->getWire()== NULL && endItem->getWire() == NULL &&
+                    ((startItem->isInputPort() == true && endItem->isInputPort() == false)  ||
+                     (startItem->isInputPort() == false && endItem->isInputPort() == true))){
+                Wire *wire = new Wire(startItem, endItem);
 
-            //konstruktoru wire se predavaji spatne souradnice portu
-            printf("x - %f\n",startItem->x());
-            printf("y - %f\n",startItem->y());
-            printf("xx - %f\n",endItem->x());
-            printf("yy - %f\n",endItem->y());
-            Wire *wire = new Wire(startItem, endItem);
+                //ulozi objekt Wire do seznamu (nemusi to byt seznam - jeden port = jeden Wire)
+                startItem->addWire(wire);
+                endItem->addWire(wire);
 
+                //urcuje, jestli bude wire nad nebo pod ostatnimy prvky v GrScene
+                wire->setZValue(1000.0);
 
-            //ulozi objekt Wire do seznamu (nemusi to byt seznam - jeden port = jeden Wire)
-            startItem->addWire(wire);
-            endItem->addWire(wire);
+                //prida wire na GrScene
+                addItem(wire);
 
-            //urcuje, jestli bude wire nad nebo pod ostatnimy prvky v GrScene
-            wire->setZValue(1000.0);
-
-            //prida wire na GrScene
-            addItem(wire);
-
-            wire->updatePosition();
+                wire->updatePosition();
+            }
         }
     }
     wire = 0;

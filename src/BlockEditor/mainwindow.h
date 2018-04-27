@@ -35,6 +35,10 @@ private slots:
     void blockButtonClicked(int button);
     void pointerGroupClicked(int id);
 
+    void about();
+    void open();
+    void save();
+
 private:
     enum {addButton, subButton, mulButton, divButton, stepButton, runButton, moveButton, wireButton};
 
@@ -47,9 +51,6 @@ private:
     QToolBar *toolBar;
     QSpinBox *inputsSpinBox;
 
-    QMenu *fileMenu;
-    QMenu *aboutMenu;
-
     BlockEditorScene *scene;
 
     QGraphicsView *view;
@@ -57,6 +58,16 @@ private:
     void createToolBox();
     void createToolBar();
     QAbstractButton *createBlockButton(const QString &text, int buttonType);
+
+    void createMenus();
+    void createActions();
+
+    QAction *aboutAction;
+    QAction *saveAction;
+    QAction *openAction;
+
+    QMenu *fileMenu;
+    QMenu *aboutMenu;
 
 };
 

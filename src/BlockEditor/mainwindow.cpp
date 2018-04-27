@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
 
+    createActions();
+    createMenus();
     scene = new BlockEditorScene(this);
     scene->setSceneRect(QRectF(-200, -200, 400, 400));
 
@@ -184,4 +186,75 @@ QAbstractButton *MainWindow::createBlockButton(const QString &text, int buttonTy
 
     return button;
 
+}
+
+
+void MainWindow::createActions()
+{
+    aboutAction = new QAction(tr("A&bout"), this);
+    aboutAction->setShortcut(tr("Ctrl+B"));
+    connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
+
+    saveAction = new QAction(tr("&Open"), this);
+    saveAction->setShortcut(tr("Ctrl+O"));
+    connect(saveAction, SIGNAL(triggered()), this, SLOT(open()));
+
+    openAction = new QAction(tr("&Save"), this);
+    openAction->setShortcut(tr("Ctrl+S"));
+    connect(openAction, SIGNAL(triggered()), this, SLOT(save()));
+}
+
+void MainWindow::createMenus()
+{
+    fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu->addAction(saveAction);
+    fileMenu->addAction(openAction);
+
+
+    aboutMenu = menuBar()->addMenu(tr("&Help"));
+    aboutMenu->addAction(aboutAction);
+}
+
+void MainWindow::about()
+{
+    QMessageBox::about(this, tr("About Block Editor"),
+                       tr("The <b>Block Editor</b> something"));
+}
+
+void MainWindow::save()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,
+           tr("Save Block Scheme"), "",
+           tr("Block Scheme (*.bsch)"));
+
+    if (fileName.isEmpty()) {
+        return;
+    } else {
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly)) {
+            QMessageBox::information(this, tr("Unable to open file"),
+            file.errorString());
+            return;
+        }
+    }
+
+
+}
+
+void MainWindow::open()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+        tr("Open Block Scheme"), "",
+        tr("Block Scheme (*.bsch)"));
+
+    if (fileName.isEmpty()){
+        return;
+    } else {
+        QFile file(fileName);
+        if (!file.open(QIODevice::ReadOnly)) {
+            QMessageBox::information(this, tr("Unable to open file"),
+                file.errorString());
+            return;
+        }
+    }
 }
