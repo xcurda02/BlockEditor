@@ -11,12 +11,24 @@ const qreal Pi = 3.14;
 Wire::Wire(Port *startItem,  Port *endItem, QGraphicsItem *parent)
     : QGraphicsLineItem(parent)
 {
-       myStartItem = startItem;
-       myEndItem = endItem;
+       this->startItem = startItem;
+       this->endItem = endItem;
        setFlag(QGraphicsItem::ItemIsSelectable, true);
        setPen(QPen(Qt::black, 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
        qInfo() << "wire created";
+
+       valueSet = false;
 }
+bool Wire::isValueSet(){
+    return valueSet;
+}
+void Wire::setValue(double value){
+    this->value = value;
+}
+double Wire::getValue(){
+    return value;
+}
+
 
 QRectF Wire::boundingRect() const
 {
@@ -40,7 +52,7 @@ QPainterPath Wire::shape() const
 
 void Wire::updatePosition()
 {
-    QLineF line(QPointF(myStartItem->boundingRect().topLeft().x(),myStartItem->boundingRect().topLeft().y()), QPointF(myEndItem->boundingRect().topLeft().x(),myEndItem->boundingRect().topLeft().y()));
+    QLineF line(QPointF(startItem->boundingRect().topLeft().x(),startItem->boundingRect().topLeft().y()), QPointF(endItem->boundingRect().topLeft().x(),endItem->boundingRect().topLeft().y()));
     setLine(line);
 }
 
@@ -59,6 +71,6 @@ void Wire::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     QPen myPen = pen();
     painter->setBrush(Qt::black);
     painter->setPen(QPen(Qt::black, 4));
-    QLineF line(QPointF(myStartItem->boundingRect().topLeft().x()+5.0,myStartItem->boundingRect().topLeft().y()+5.0), QPointF(myEndItem->boundingRect().topLeft().x()+5.0,myEndItem->boundingRect().topLeft().y()+5.0));
+    QLineF line(QPointF(startItem->boundingRect().topLeft().x()+5.0,startItem->boundingRect().topLeft().y()+5.0), QPointF(endItem->boundingRect().topLeft().x()+5.0,endItem->boundingRect().topLeft().y()+5.0));
     painter->drawLine(line);
 }

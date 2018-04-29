@@ -148,10 +148,11 @@ void MainWindow::createToolBar(){
 
 void MainWindow::actionTypeGroupClicked(int button_id){
     if(button_id == stepButton){
-        if (calc->allBlocksProcessed())
-            qInfo()<<"all blocks processed";
-        else
-            qInfo()<<"NOT all blocks processed";
+        double res = calc->makeStep();
+        qInfo() << "res:" << res;
+        QMessageBox msgBox;
+        msgBox.setText("output is: " + QString::number(res));
+        msgBox.exec();
     }
 
 }
@@ -201,3 +202,10 @@ QAbstractButton *MainWindow::createBlockButton(const QString &text, int buttonTy
     return button;
 
 }
+
+bool MainWindow::getDoubleFromDialog(double &value){
+    bool ok;
+    value = QInputDialog::getDouble(0, tr("Input"), tr("Input value:"), 5.25252, -2147483647, 2147483647, 5, &ok);
+    return ok;
+}
+

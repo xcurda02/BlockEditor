@@ -12,9 +12,9 @@ public:
     Port(QPointF blockPos,bool inputPort, QGraphicsItem *parent=0);
     void addWire(Wire *wire);
     Wire *getWire();
+
     bool isInputPort();
-    bool isValueSet();
-    void setValue(double value);
+
 
 
 protected:
@@ -22,8 +22,6 @@ protected:
     void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
 private:
     bool inputPort;
-    bool valueSet;
-    double value;
     Wire *wire;
 
 

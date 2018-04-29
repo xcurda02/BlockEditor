@@ -1,12 +1,60 @@
 #include <QDebug>
 #include <QBrush>
+#include <QPainter>
 #include "wire.h"
 #include "block.h"
+
+class QPainter;
 
 Block::Block(BlockType blockType, QGraphicsItem *parent): QGraphicsPixmapItem(parent)
 {
 
     this->blockType =  blockType;
+
+    unEmph();
+
+    setFlag(QGraphicsItem::ItemIsMovable, true);
+    setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+    qInfo() << "block created";
+    processed = false;
+    toSkip = false;
+}
+
+Block::BlockType Block::getBlockType(){
+    return blockType;
+}
+
+void Block::addPort(Port *port){
+    ports.append(port);
+}
+
+Port *Block::getOutPort(){
+    return ports[ports.count()-1];
+
+}
+
+void Block::emph(){
+    QPixmap pixmap;
+    switch(blockType){
+        case addBlock:
+            pixmap = QPixmap(":/images/images/emphAddBlock.png");
+            break;
+        case subBlock:
+            pixmap = QPixmap(":/images/images/emphSubBlock.png");
+            break;
+        case mulBlock:
+            pixmap = QPixmap(":/images/images/emphMulBlock.png");
+            break;
+        case divBlock:
+            pixmap = QPixmap(":/images/images/emphDivBlock.png");
+            break;
+    }
+
+    setPixmap(pixmap);
+}
+
+void Block::unEmph(){
     QPixmap pixmap;
     switch(blockType){
         case addBlock:
@@ -24,24 +72,6 @@ Block::Block(BlockType blockType, QGraphicsItem *parent): QGraphicsPixmapItem(pa
     }
 
     setPixmap(pixmap);
-    setFlag(QGraphicsItem::ItemIsMovable, true);
-    setFlag(QGraphicsItem::ItemIsSelectable, true);
-    setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
-    qInfo() << "block created";
-
-}
-
-Block::BlockType Block::getBlockType(){
-    return blockType;
-}
-
-void Block::addPort(Port *port){
-    ports.append(port);
-}
-
-Port *Block::getOutPort(){
-    return ports[ports.count()-1];
-
 }
 
 void Block::setProcessed(){
@@ -54,6 +84,20 @@ void Block::setNotProcessed(){
 
 bool Block::isProcessed(){
     return processed;
+}
+
+bool Block::isToSkip(){
+    return toSkip;
+}
+void Block::skip(){
+    toSkip = true;
+}
+void Block::unSkip(){
+    toSkip = false;
+}
+
+QList<Port*> Block::getPorts(){
+    return ports;
 }
 
 QVariant Block::itemChange(GraphicsItemChange change, const QVariant & value){

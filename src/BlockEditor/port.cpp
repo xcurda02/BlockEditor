@@ -9,7 +9,7 @@ Port::Port(QPointF blockPos,bool inputPort, QGraphicsItem *parent) : QGraphicsEl
     setBrush(brush);
     setAcceptHoverEvents(true);
     wire = NULL;
-    valueSet = false;
+
     this->inputPort = inputPort;
 }
 
@@ -24,12 +24,7 @@ Wire *Port::getWire(){
 bool Port::isInputPort(){
     return inputPort;
 }
-bool Port::isValueSet(){
-    return valueSet;
-}
-void Port::setValue(double value){
-    this->value = value;
-}
+
 
 
 

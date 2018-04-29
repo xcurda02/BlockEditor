@@ -16,11 +16,22 @@ public:
     void addPort(Port *port);
     void setProcessed();
     void setNotProcessed();
+
+    bool isToSkip();
+    void skip();
+    void unSkip();
+
     bool isProcessed();
+    void emph();
+    void unEmph();
+
+    QList<Port*> getPorts();
+
     int type() const Q_DECL_OVERRIDE {return Type;}
 private:
     QList<Port*> ports;
     bool processed;
+    bool toSkip;
     BlockType blockType;
 
 protected:

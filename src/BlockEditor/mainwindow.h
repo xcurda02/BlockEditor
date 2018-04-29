@@ -9,6 +9,7 @@
 #include "calculator.h"
 
 class BlockEditorScene;
+class Calculator;
 
 QT_BEGIN_NAMESPACE
 class QGraphicsView;
@@ -29,6 +30,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    static bool getDoubleFromDialog(double &value);
 
 private slots:
 
