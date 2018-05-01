@@ -28,11 +28,19 @@ QList<Block *> BlockEditorScene::getBlocks(){
     QList<Block *> blocks;
     foreach (QGraphicsItem *item, items()) {
         if( item->type() == Block::Type){
-            qInfo() << "nalezen block";
             blocks.append(qgraphicsitem_cast<Block *>(item));
         }
     }
     return blocks;
+}
+QList<Wire *> BlockEditorScene::getWires(){
+    QList<Wire *> wires;
+    foreach (QGraphicsItem *item, items()) {
+        if( item->type() == Wire::Type){
+            wires.append(qgraphicsitem_cast<Wire *>(item));
+        }
+    }
+    return wires;
 }
 
 
@@ -50,13 +58,13 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 qInfo() << "--(block)block top edge : " << blockTopEdge;
                 double margin = (double) blockTopEdge / (double)(blockInputs+1);
                 for(int i = 1; i < blockInputs+1; i++){
-                    Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(i*margin),mouseEvent->scenePos().y()-5),true);
+                    Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(i*margin),mouseEvent->scenePos().y()-5),true, block);
                     port->setZValue(1001.0);
                     addItem(port);
                     block->addPort(port);
                 }
                 double blockHeight = abs(block->boundingRect().topRight().y() - block->boundingRect().bottomRight().y());
-                Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(blockTopEdge/2),mouseEvent->scenePos().y()+blockHeight-5),false);
+                Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(blockTopEdge/2),mouseEvent->scenePos().y()+blockHeight-5),false, block);
                 addItem(port);
                 block->addPort(port);
 

@@ -30,10 +30,13 @@ public:
     void setColor(const QColor &color) { myColor = color; }
     Port *getStartItem() const { return startItem; }
     Port *getEndItem() const { return endItem; }
+    Port *getInPort();
+    Port *getOutPort();
     void updatePosition();
 
     bool isValueSet();
     void setValue(double value);
+    void unsetValue();
     double getValue();
 
 protected:

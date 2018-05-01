@@ -13,6 +13,7 @@ public:
     enum Mode {InsertBlock, MoveBlock, InsertWire};
     explicit BlockEditorScene(QObject *parent=0);
     QList<Block *> getBlocks();
+    QList<Wire *> getWires();
 
 
 public slots:

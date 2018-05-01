@@ -5,6 +5,10 @@
 #include <QGraphicsSceneMouseEvent>
 #include "port.h"
 
+class Port;
+
+
+
 class Block : public QGraphicsPixmapItem
 {
 public:

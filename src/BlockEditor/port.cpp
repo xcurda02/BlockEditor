@@ -2,13 +2,14 @@
 #include <QBrush>
 #include "port.h"
 
-Port::Port(QPointF blockPos,bool inputPort, QGraphicsItem *parent) : QGraphicsEllipseItem(parent)
+Port::Port(QPointF blockPos,bool inputPort,Block *block, QGraphicsItem *parent) : QGraphicsEllipseItem(parent)
 {
     setRect(blockPos.x(),blockPos.y(),10,10);
     QBrush brush(Qt::gray);
     setBrush(brush);
     setAcceptHoverEvents(true);
-    wire = NULL;
+    wire = nullptr;
+    this->block = block;
 
     this->inputPort = inputPort;
 }
@@ -23,6 +24,10 @@ Wire *Port::getWire(){
 
 bool Port::isInputPort(){
     return inputPort;
+}
+
+Block *Port::getBlock(){
+    return block;
 }
 
 

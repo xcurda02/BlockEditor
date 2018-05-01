@@ -9,6 +9,9 @@
 #include "wire.h"
 #include "mainwindow.h"
 
+#define CYCLE_EXCEPTION 1
+#define LAST_STEP_EXCEPTION 2
+
 QT_BEGIN_NAMESPACE
 class BlockEditorScene;
 class QGraphicsItem;
@@ -23,15 +26,20 @@ class Calculator: public QObject
 public:
     explicit Calculator(BlockEditorScene *scene, QObject *parent = nullptr);
     
-    double makeStep();
-
+    bool makeStep(double &result);
+    bool noCycles();
+    bool oneOutPortUnwired();
+    void setDefaultItemValues();
 signals:
 
 public slots:
 
 private:
     void setBlocksNotProcessed();
+    QList<Block *> getLevel1Blocks();
     bool allBlocksProcessed();
+    void setDefaultWireValues();
+    void unSkipAll();
     Block *getNextBlock();
     double calculate(QList<double> &values, Block::BlockType blockType);
     BlockEditorScene *scene;

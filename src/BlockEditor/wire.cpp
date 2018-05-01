@@ -23,12 +23,28 @@ bool Wire::isValueSet(){
     return valueSet;
 }
 void Wire::setValue(double value){
+    valueSet = true;
     this->value = value;
 }
 double Wire::getValue(){
     return value;
 }
+void Wire::unsetValue(){
+    valueSet = false;
+}
 
+Port *Wire::getInPort(){
+    if (endItem->isInputPort())
+        return endItem;
+    else
+        return startItem;
+}
+Port *Wire::getOutPort(){
+    if (startItem->isInputPort())
+        return endItem;
+    else
+        return startItem;
+}
 
 QRectF Wire::boundingRect() const
 {

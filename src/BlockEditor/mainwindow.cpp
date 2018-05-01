@@ -148,11 +148,33 @@ void MainWindow::createToolBar(){
 
 void MainWindow::actionTypeGroupClicked(int button_id){
     if(button_id == stepButton){
-        double res = calc->makeStep();
-        qInfo() << "res:" << res;
-        QMessageBox msgBox;
-        msgBox.setText("output is: " + QString::number(res));
-        msgBox.exec();
+        if (calc->oneOutPortUnwired()){
+            double result;
+            if(!calc->makeStep(result)){
+                qInfo() << "byl proveden posledni krok, hodnoty se vraci na default";
+                calc->setDefaultItemValues();
+            }
+            qInfo() << "res:" << result;
+            QMessageBox msgBox;
+            msgBox.setText("output is: " + QString::number(result));
+            msgBox.exec();
+
+         }else{
+            QMessageBox msgBox;
+            msgBox.setText("Presne jeden vystupni port musi byt nenapojen");
+            msgBox.exec();
+        }
+    } else {
+        calc->setDefaultItemValues();
+        if(calc->noCycles()){
+
+            double result;
+            while(calc->makeStep(result)){}
+
+            QMessageBox msgBox;
+            msgBox.setText("final result is: " + QString::number(result));
+            msgBox.exec();
+        }
     }
 
 }
