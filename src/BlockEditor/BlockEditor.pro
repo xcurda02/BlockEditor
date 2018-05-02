@@ -31,14 +31,16 @@ SOURCES += \
     blockeditorscene.cpp \
     block.cpp \
     port.cpp \
-    wire.cpp
+    wire.cpp \
+    calculator.cpp
 
 HEADERS += \
         mainwindow.h \
     blockeditorscene.h \
     block.h \
     port.h \
-    wire.h
+    wire.h \
+    calculator.h
 
 FORMS += \
         mainwindow.ui

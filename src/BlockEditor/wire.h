@@ -1,10 +1,8 @@
 #ifndef WIRE_H
 #define WIRE_H
 
-//#include <QDeclarativeItem>
 #include <QMainWindow>
 #include <QObject>
-//#include <QQuickItem>
 #include <QWidget>
 
 #include "block.h"
@@ -29,20 +27,28 @@ public:
     enum { Type = UserType +4};
     int type() const Q_DECL_OVERRIDE { return Type; }
     QRectF boundingRect() const Q_DECL_OVERRIDE;
-    //QPainterPath shape() const Q_DECL_OVERRIDE;
     void setColor(const QColor &color) { myColor = color; }
-    Port *startItem() const { return myStartItem; }
-    Port *endItem() const { return myEndItem; }
+    Port *getStartItem() const { return startItem; }
+    Port *getEndItem() const { return endItem; }
+    Port *getInPort();
+    Port *getOutPort();
     void updatePosition();
+
+    bool isValueSet();
+    void setValue(double value);
+    void unsetValue();
+    double getValue();
 
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) Q_DECL_OVERRIDE;
 
 private:
-    Port *myStartItem;
-    Port *myEndItem;
+    Port *startItem;
+    Port *endItem;
     QColor myColor;
-    QPolygonF arrowHead;
+
+    bool valueSet;
+    double value;
 
 };
 

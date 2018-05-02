@@ -18,13 +18,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(scene, SIGNAL(blockInserted(Block*)),
                 this, SLOT(blockInserted(Block*)));
-
     createToolBox();
-    createToolBar();
+    createToolbar();
+
     scene->setBlockInputs(inputsSpinBox->value());
 
 
     view = new QGraphicsView(scene);
+    view->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     QHBoxLayout *layout = new QHBoxLayout;
 
     QVBoxLayout *vlayout = new QVBoxLayout;
@@ -49,6 +50,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setCentralWidget(widget);
 
+    calc = new Calculator(scene);
+
 }
 
 MainWindow::~MainWindow()
@@ -69,10 +72,11 @@ void MainWindow::createToolBox(){
 
 
 
-    gridLayout->addWidget(createBlockButton("+",addButton),0,0);
-    gridLayout->addWidget(createBlockButton("-",subButton),0,1);
-    gridLayout->addWidget(createBlockButton("*",mulButton),1,0);
-    gridLayout->addWidget(createBlockButton("/",divButton),1,1);
+    gridLayout->addWidget(createBlockButton(addButton),0,0);
+    gridLayout->addWidget(createBlockButton(subButton),0,1);
+    gridLayout->addWidget(createBlockButton(mulButton),1,0);
+    gridLayout->addWidget(createBlockButton(divButton),1,1);
+
 
     inputsSpinBox = new QSpinBox;
     inputsSpinBox->setValue(2);
@@ -82,6 +86,7 @@ void MainWindow::createToolBox(){
 
     gridLayout->addWidget(label);
     gridLayout->addWidget(inputsSpinBox);
+    gridLayout->addWidget(createBlockButton(invBButton),2,0);
 
 
     gridLayout->setRowStretch(3, 10);
@@ -96,67 +101,160 @@ void MainWindow::createToolBox(){
 
 }
 
-void MainWindow::pointerGroupClicked(int)
-{
-    //pro tlacitka Move(ID=6) a Wire(ID=7) v mnozine mode MoveBlock(1) InsertWire(2) proto -5 k ID
-    scene->setMode(BlockEditorScene::Mode(pointerTypeGroup->checkedId()-5));
-}
 
-void MainWindow::createToolBar(){
+void MainWindow::createToolbar(){
 
-    QToolButton *objMoveButton = new QToolButton;
-    objMoveButton->setCheckable(true);
-    objMoveButton->setChecked(true);
-    objMoveButton->setText("M");
 
-    QToolButton *objWireButton = new QToolButton;
-    objWireButton->setCheckable(true);
-    objWireButton->setText("W");
 
-    pointerTypeGroup = new QButtonGroup(this);
-    pointerTypeGroup->addButton(objMoveButton, int(moveButton));
-    pointerTypeGroup->addButton(objWireButton, int(wireButton));
+    QToolButton *objMoveButton = createToolbarButton(moveButton);
+    QToolButton *objWireButton = createToolbarButton(wireButton);
+    QToolButton *objInvButton = createToolbarButton(invAButton);
+    QToolButton *objStepButton = createToolbarButton(stepButton);
+    QToolButton *objRunButton = createToolbarButton(runButton);
+
+    qInfo() << "buttons created";
+
+
+    toolbarButtonGroup = new QButtonGroup(this);
+    toolbarButtonGroup->addButton(objMoveButton, int(moveButton));
+    toolbarButtonGroup->addButton(objWireButton, int(wireButton));
+    toolbarButtonGroup->addButton(objInvButton, int(invAButton));
+    toolbarButtonGroup->addButton(objStepButton, int(stepButton));
+
+    toolbarButtonGroup->addButton(objRunButton, int(runButton));
+
+    qInfo() << "added to group";
 
     //pridano
-    connect(pointerTypeGroup, SIGNAL(buttonClicked(int)),
-            this, SLOT(pointerGroupClicked(int)));
-
-    QToolButton *objStepButton = new QToolButton;
-    objStepButton->setText("S");
-
-    QToolButton *objRunButton = new QToolButton;
-    objRunButton->setText("R");
-
-    actionTypeGroup = new QButtonGroup(this);
-    actionTypeGroup->addButton(objStepButton, int(stepButton));
-    actionTypeGroup->addButton(objRunButton, int(runButton));
-
-
+    connect(toolbarButtonGroup, SIGNAL(buttonClicked(int)),
+            this, SLOT(toolbarButtonGroupClicked(int)));
 
     toolBar = addToolBar(tr("ToolBar"));
     toolBar->addWidget(objMoveButton);
     toolBar->addWidget(objWireButton);
+    toolBar->addWidget(objInvButton);
     toolBar->addWidget(objStepButton);
     toolBar->addWidget(objRunButton);
 }
+
+void MainWindow::toolbarButtonGroupClicked(int button_id){
+    if(button_id == stepButton){
+        if (calc->oneOutPortUnwired()){
+            double result;
+            bool exc = false;
+            try{
+                if(!calc->makeStep(result)){
+                    qInfo() << "byl proveden posledni krok, hodnoty se vraci na default";
+                    calc->setDefaultItemValues();
+                }
+            }catch(int e){
+                 qInfo() << "zmacknut cancel:" << result;
+                 exc = true;
+            }
+            if(!exc){
+                qInfo() << "res:" << result;
+                showMsg("Vysledek kroku: " + QString::number(result));
+            }
+
+
+
+         }else
+            showMsg("Presne jeden vystupni port musi byt nenapojen");
+
+    } else if(button_id == runButton){
+        calc->setDefaultItemValues();
+        if(calc->noCycles() ){
+            if(calc->oneOutPortUnwired()){
+                double result;
+                bool exc = false;
+                try{
+                    while(calc->makeStep(result)){}
+                }catch(int e){
+                     qInfo() << "zmacknut cancel:" << result;
+                     exc = true;
+                }
+                calc->setDefaultItemValues();
+                if (!exc){
+                    showMsg("final result is: " + QString::number(result));
+                }
+
+            }else{
+                showMsg("Presne jeden vystupni port musi byt nenapojen");
+            }
+
+        } else {
+            showMsg("Zjistena smycka ve schematu");
+        }
+    } else if(button_id == invAButton){
+        qInfo() << "inv button clicked";
+
+    }else{
+        //pro tlacitka Move(ID=6) a Wire(ID=7) v mnozine mode MoveBlock(1) InsertWire(2) proto -5 k ID
+        scene->setMode(BlockEditorScene::Mode(toolbarButtonGroup->checkedId()-5));
+        blocksButtonGroup->button(int(invBButton))->setChecked(true);
+
+    }
+
+}
+
+void MainWindow::showMsg(QString msg){
+    QMessageBox msgBox;
+    msgBox.setText(msg);
+    msgBox.exec();
+}
+
 
 void MainWindow::blockButtonClicked(int button_id){
 
     qInfo() << "button clicked: id" << button_id;
     scene->setMode(BlockEditorScene::InsertBlock);
     scene->setBlockType(Block::BlockType(button_id));
+
+    toolbarButtonGroup->button(int(invAButton))->setChecked(true);
 }
 
 void MainWindow::blockInserted(Block *block){
     qInfo() << "scene items: " << scene->items().count();
-    pointerTypeGroup->button(int(moveButton))->setChecked(true);
-    scene->setMode(BlockEditorScene::Mode(pointerTypeGroup->checkedId()));
     blocksButtonGroup->button(int(block->getBlockType()))->setChecked(false);
 }
 
 
 
-QAbstractButton *MainWindow::createBlockButton(const QString &text, int buttonType){
+QToolButton *MainWindow::createToolbarButton(int buttonType){
+    QToolButton *button = new QToolButton;
+    QPixmap pixmap;
+    switch(buttonType){
+        case moveButton:
+            pixmap = QPixmap(":/images/images/move.png");
+            button->setCheckable(true);
+            break;
+        case wireButton:
+            pixmap = QPixmap(":/images/images/wire.png");
+            button->setCheckable(true);
+            break;
+        case stepButton:
+            pixmap = QPixmap(":/images/images/step.png");
+            break;
+        case runButton:
+            pixmap = QPixmap(":/images/images/run.png");
+            break;
+        case invAButton:
+            pixmap = QPixmap(":/images/images/run.png");
+            button->setCheckable(true);
+            button->hide();
+            break;
+    }
+
+    QIcon ButtonIcon(pixmap);
+    button->setIcon(ButtonIcon);
+    button->setIconSize(QSize(30,30));
+    button->setMinimumSize(30,30);
+
+    return button;
+}
+
+
+QAbstractButton *MainWindow::createBlockButton(int buttonType){
     QToolButton *button = new QToolButton;
     QPixmap pixmap;
     switch(buttonType){
@@ -172,18 +270,23 @@ QAbstractButton *MainWindow::createBlockButton(const QString &text, int buttonTy
         case divButton:
             pixmap = QPixmap(":/images/images/divBlock.png");
             break;
+        case invBButton:
+            pixmap = QPixmap(":/images/images/divBlock.png");
+            button->hide();
+            break;
     }
 
     QIcon ButtonIcon(pixmap);
     button->setIcon(ButtonIcon);
-    button->setIconSize(QSize(65,65));
+    button->setIconSize(QSize(50,50));
     button->setCheckable(true);
-    button->setMinimumSize(60,60);
+    button->setMinimumSize(50,50);
     blocksButtonGroup->addButton(button, int(buttonType));
 
     return button;
 
 }
+
 void MainWindow::closeEvent(QCloseEvent *event){
     if(scene->getSceneChanged()){
         event->ignore();
@@ -274,7 +377,7 @@ void MainWindow::save()
                     outputStream << "w";
                     int blockNum;
                     for(int k=0; k!=scene->blocks.length();++k){
-                        if(scene->blocks[k]->getOutPort()==scene->blocks[i]->ports[j]->getWire()->endItem() || scene->blocks[k]->getOutPort()==scene->blocks[i]->ports[j]->getWire()->startItem()){
+                        if(scene->blocks[k]->getOutPort()==scene->blocks[i]->ports[j]->getWire()->getEndItem() || scene->blocks[k]->getOutPort()==scene->blocks[i]->ports[j]->getWire()->getStartItem()){
                             blockNum=k;
                         }
                     }
@@ -364,13 +467,13 @@ void MainWindow::open()
             qInfo() << "--(block)block top edge : " << blockTopEdge;
             double margin = (double) blockTopEdge / (double)(list[4].toDouble(&ok)+1);
             for(int i = 1; i < list[4].toInt()+1; i++){
-                Port *port = new Port(QPointF(x+(i*margin),y-5),true);
+                Port *port = new Port(QPointF(x+(i*margin),y-5),true,block);
                 port->setZValue(1001.0);
                 scene->addItem(port);
                 block->addPort(port);
             }
             double blockHeight = abs(block->boundingRect().topRight().y() - block->boundingRect().bottomRight().y());
-            Port *port = new Port(QPointF(x+(blockTopEdge/2),y+blockHeight-5),false);
+            Port *port = new Port(QPointF(x+(blockTopEdge/2),y+blockHeight-5),false,block);
             port->setZValue(1001.0);
             scene->addItem(port);
             block->addPort(port);

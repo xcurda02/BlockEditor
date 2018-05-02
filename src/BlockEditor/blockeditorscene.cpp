@@ -12,6 +12,7 @@ BlockEditorScene::BlockEditorScene(QObject *parent) : QGraphicsScene(parent)
     mode = MoveBlock;
     blockType = Block::addBlock;
     sceneChanged = false;
+    emphasizedPort = nullptr;
 
 }
 
@@ -26,6 +27,7 @@ void BlockEditorScene::setBlockInputs(int inputs){
     blockInputs = inputs;
 }
 
+
 void BlockEditorScene::addBlock(Block *block){
     blocks.append(block);
 }
@@ -34,6 +36,42 @@ void BlockEditorScene::setSceneChanged(bool val){
 }
 bool BlockEditorScene::getSceneChanged(){
     return sceneChanged;
+}
+
+QList<Block *> BlockEditorScene::getBlocks(){
+    QList<Block *> blocks;
+    foreach (QGraphicsItem *item, items()) {
+        if( item->type() == Block::Type){
+            blocks.append(qgraphicsitem_cast<Block *>(item));
+        }
+    }
+    return blocks;
+}
+QList<Wire *> BlockEditorScene::getWires(){
+    QList<Wire *> wires;
+    foreach (QGraphicsItem *item, items()) {
+        if( item->type() == Wire::Type){
+            wires.append(qgraphicsitem_cast<Wire *>(item));
+        }
+    }
+    return wires;
+}
+
+Port *BlockEditorScene::emphPort(Port *port){
+    if(port == nullptr)
+        return emphasizedPort;
+
+    port->emph();
+    emphasizedPort = port;
+    return nullptr;
+}
+
+void BlockEditorScene::unEmphPort(){
+    if (emphasizedPort){
+        emphasizedPort->unEmph();
+        emphasizedPort = nullptr;
+    }
+
 }
 
 void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
@@ -53,14 +91,16 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 qInfo() << "--(block)block top edge : " << blockTopEdge;
                 double margin = (double) blockTopEdge / (double)(blockInputs+1);
                 for(int i = 1; i < blockInputs+1; i++){
-                    Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(i*margin),mouseEvent->scenePos().y()-5),true);
+                    Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(i*margin)-5,mouseEvent->scenePos().y()-5),true, block);
                     port->setZValue(1001.0);
                     addItem(port);
                     block->addPort(port);
                 }
                 double blockHeight = abs(block->boundingRect().topRight().y() - block->boundingRect().bottomRight().y());
-                Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(blockTopEdge/2),mouseEvent->scenePos().y()+blockHeight-5),false);
-                port->setZValue(1001.0);
+
+
+                Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(blockTopEdge/2)-5,mouseEvent->scenePos().y()+blockHeight-5),false, block);
+
                 addItem(port);
                 block->addPort(port);
 
@@ -68,7 +108,7 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 emit blockInserted(block);
 
                 //pridano po pridani InsertWire. Po vlozeni bloku s nim neslo hybat, ikdyz move tlacitko bylo zaskrknute
-                mode = MoveBlock;
+
                 break;
         }
             case InsertWire:
@@ -90,7 +130,33 @@ void BlockEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent){
     if (mode == InsertWire && wire != NULL){//predelano z nullptr na NULL
         QLineF newLine(wire->line().p1(), mouseEvent->scenePos());
         wire->setLine(newLine);
+
+        QList<QGraphicsItem *> itemsHere = items(mouseEvent->scenePos());
+        qInfo() << "Items here count:" << itemsHere.count();
+
+        bool emphed = false;
+        foreach (QGraphicsItem *item, itemsHere) {
+            if(item->type() == Port::Type){
+                Port *port = qgraphicsitem_cast<Port *>(item);
+                emphPort(port);
+                emphed = true;
+            }
+        }
+        if (!emphed)
+            unEmphPort();
+
+        /*
+        if (itemsHere.count() && itemsHere.first()->type() == Port::Type){
+            Port *port = qgraphicsitem_cast<Port *>(itemsHere.first());
+            emphPort(port);
+        }else{
+            qInfo() << "unemph port";
+            unEmphPort();
+        }*/
+
     } else if (mode == MoveBlock){
+        QGraphicsScene::mouseMoveEvent(mouseEvent);
+    } else if (mode == InsertWire && wire == NULL){
         QGraphicsScene::mouseMoveEvent(mouseEvent);
     }
 }
@@ -133,12 +199,24 @@ void BlockEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
                 //prida wire na GrScene
                 addItem(wire);
-
                 wire->updatePosition();
             }
+
         }
     }
     wire = 0;
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
+}
+
+void BlockEditorScene::keyPressEvent(QKeyEvent *keyEvent){
+    if (keyEvent->key() == Qt::Key_Delete){
+
+        if(selectedItems().count() && selectedItems().first()->type() == Block::Type){
+            qInfo() << "bude se mazat block";
+            Block *block = qgraphicsitem_cast<Block *>(selectedItems().first());
+            delete block;
+
+        }
+    }
 }
 
