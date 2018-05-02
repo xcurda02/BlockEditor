@@ -28,15 +28,6 @@ QRectF Wire::boundingRect() const
         .adjusted(-extra, -extra, extra, extra);
 }
 
-/*
- * neco s sipkou na konci cary
-QPainterPath Wire::shape() const
-{
-    QPainterPath path = QGraphicsLineItem::shape();
-    path.addPolygon(arrowHead);
-    return path;
-}
-*/
 
 void Wire::updatePosition()
 {
@@ -46,13 +37,6 @@ void Wire::updatePosition()
 
 
 
-//zjednodusena funkce kresleni cary
-//v arrow::paint je:
-//kdyz tahnu z/do prostred bloku, cara se vykresli z kraje na kraj
-//kresleni konce sipky
-
-//Wire::paint - zatim jednoduche vykresleni cary
-//problem startItem endItem predavaji souradnice [0.0, 0.0]
 void Wire::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
           QWidget *)
 {

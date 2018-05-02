@@ -15,7 +15,7 @@ public:
     bool isInputPort();
     bool isValueSet();
     void setValue(double value);
-
+    double getValue();
 
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent * event);

@@ -1,4 +1,4 @@
-    #include <QDebug>
+#include <QDebug>
 #include <QBrush>
 #include "wire.h"
 #include "block.h"

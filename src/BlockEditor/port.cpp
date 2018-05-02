@@ -30,6 +30,9 @@ bool Port::isValueSet(){
 void Port::setValue(double value){
     this->value = value;
 }
+double Port::getValue(){
+    return this->value;
+}
 
 
 

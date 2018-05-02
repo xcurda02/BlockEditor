@@ -15,8 +15,8 @@ public:
     Port *getOutPort();
     void addPort(Port *port);
     int type() const Q_DECL_OVERRIDE {return Type;}
-private:
     QList<Port*> ports;
+private:
 
 protected:
     BlockType blockType;

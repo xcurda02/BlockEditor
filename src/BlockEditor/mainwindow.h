@@ -1,12 +1,15 @@
  #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QGraphicsPixmapItem>
 #include <QMainWindow>
 #include <QtWidgets>
 #include <QTextStream>
 #include <QtCore>
+#include <QCloseEvent>
 #include "block.h"
-
+#include "port.h"
+#include "wire.h"
 class BlockEditorScene;
 
 QT_BEGIN_NAMESPACE
@@ -68,6 +71,9 @@ private:
 
     QMenu *fileMenu;
     QMenu *aboutMenu;
+
+protected:
+    void closeEvent(QCloseEvent *event);
 
 };
 

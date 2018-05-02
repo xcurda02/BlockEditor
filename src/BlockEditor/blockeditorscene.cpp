@@ -1,6 +1,7 @@
 #include "blockeditorscene.h"
 #include "port.h"
 #include "wire.h"
+#include "mainwindow.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QtMath>
 #include <QDebug>
@@ -10,6 +11,7 @@ BlockEditorScene::BlockEditorScene(QObject *parent) : QGraphicsScene(parent)
 {
     mode = MoveBlock;
     blockType = Block::addBlock;
+    sceneChanged = false;
 
 }
 
@@ -24,12 +26,24 @@ void BlockEditorScene::setBlockInputs(int inputs){
     blockInputs = inputs;
 }
 
+void BlockEditorScene::addBlock(Block *block){
+    blocks.append(block);
+}
+void BlockEditorScene::setSceneChanged(bool val){
+    sceneChanged=val;
+}
+bool BlockEditorScene::getSceneChanged(){
+    return sceneChanged;
+}
+
 void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
     if (mouseEvent->button() == Qt::LeftButton){
         switch(mode){
             case InsertBlock:
         {
                 Block *block = new Block(blockType);
+                this->setSceneChanged(true);
+                addBlock(block);
                 addItem(block);
                 block->setPos(mouseEvent->scenePos());
                 block->setZValue(1000.0);
@@ -77,7 +91,6 @@ void BlockEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent){
         QLineF newLine(wire->line().p1(), mouseEvent->scenePos());
         wire->setLine(newLine);
     } else if (mode == MoveBlock){
-
         QGraphicsScene::mouseMoveEvent(mouseEvent);
     }
 }
@@ -110,7 +123,7 @@ void BlockEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
                     ((startItem->isInputPort() == true && endItem->isInputPort() == false)  ||
                      (startItem->isInputPort() == false && endItem->isInputPort() == true))){
                 Wire *wire = new Wire(startItem, endItem);
-
+                this->setSceneChanged(true);
                 //ulozi objekt Wire do seznamu (nemusi to byt seznam - jeden port = jeden Wire)
                 startItem->addWire(wire);
                 endItem->addWire(wire);
