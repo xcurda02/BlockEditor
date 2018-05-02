@@ -24,7 +24,7 @@ class Calculator: public QObject
 {
  Q_OBJECT
 public:
-    explicit Calculator(BlockEditorScene *scene, QObject *parent = nullptr);
+    explicit Calculator(BlockEditorScene *scene, QObject *parent = NULL);
     
     bool makeStep(double &result);
     bool noCycles();

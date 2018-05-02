@@ -369,11 +369,12 @@ void MainWindow::save()
             outputStream << scene->blocks[i]->ports.count()-1;
             outputStream << ";";
             for(int j=0; j != scene->blocks[i]->ports.length()-1; ++j){
-                if(scene->blocks[i]->ports[j]->isValueSet()){
-                    outputStream << "v";
-                    outputStream << scene->blocks[i]->ports[j]->getValue();
-                    outputStream << ";";
-                } else if (scene->blocks[i]->ports[j]->getWire()!= NULL){
+                //if(scene->blocks[i]->ports[j]->isValueSet()){
+                //    outputStream << "v";
+                //    outputStream << scene->blocks[i]->ports[j]->getValue();
+                //    outputStream << ";";
+                //}
+                if (scene->blocks[i]->ports[j]->getWire()!= NULL){
                     outputStream << "w";
                     int blockNum;
                     for(int k=0; k!=scene->blocks.length();++k){
@@ -504,12 +505,6 @@ void MainWindow::open()
 
                     scene->addItem(wire);
                     wire->updatePosition();
-                }else if(list[i][0]=='v'){
-                    bool ok;
-                    QString str = list[i];
-                    str.remove(0,1);
-                    scene->blocks[blockIndex]->ports[i-5]->setValue(str.toDouble(&ok));
-
                 }
             }
             blockIndex++;

@@ -9,13 +9,13 @@ Port::Port(QPointF blockPos,bool inputPort,Block *block, QGraphicsItem *parent) 
     QBrush brush(Qt::gray);
     setBrush(brush);
     setAcceptHoverEvents(true);
-    wire = nullptr;
+    wire = NULL;
     this->block = block;
 
     this->inputPort = inputPort;
 }
 Port::~Port(){
-    if (wire != nullptr){
+    if (wire != NULL){
         Port *port;
         if(inputPort)
             port = wire->getOutPort();
@@ -31,7 +31,7 @@ void Port::addWire(Wire *wire){
 }
 
 void Port::removeWire(){
-    wire = nullptr;
+    wire = NULL;
 }
 
 Wire *Port::getWire(){
@@ -68,9 +68,10 @@ void Port::unEmph(){
         emphasized = false;
     }
 }
-double Port::getValue(){
-    return this->value;
-}
+
+//double Port::getValue(){
+//    return this->value;
+//}
 
 
 

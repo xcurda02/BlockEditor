@@ -59,7 +59,7 @@ QList<Block *> Calculator::getLevel1Blocks(){
         bool unwired = true;
         foreach (Port *port, block->getPorts()) {
             if(port->isInputPort()){
-                if (port->getWire() != nullptr)
+                if (port->getWire() != NULL)
                     unwired = false;
             }
         }
@@ -78,11 +78,11 @@ bool Calculator::makeStep(double &result){
     QList<double> inputValues;
     unSkipAll();
     
-    while(inputValues.empty() && ((block = getNextBlock()) != nullptr)){
+    while(inputValues.empty() && ((block = getNextBlock()) != NULL)){
 
         foreach (Port *port, block->getPorts()) {
             if(port->isInputPort()){
-                if (port->getWire() == nullptr){
+                if (port->getWire() == NULL){
                     qInfo() << "port nema wire";
                     //dialog na nacteni hodnoty
                     block->emph();
@@ -120,7 +120,7 @@ bool Calculator::makeStep(double &result){
 
     block->setProcessed();
 
-    if(outWire != nullptr){         //Blok je napojen na vystupem na dalsi
+    if(outWire != NULL){         //Blok je napojen na vystupem na dalsi
         qInfo() << "outWire found, setting output value";
         outWire->setValue(result);
         return true;
@@ -139,7 +139,7 @@ Block *Calculator::getNextBlock(){
         if (!block->isProcessed() && !block->isToSkip())
             return block;
 
-    return nullptr;
+    return NULL;
 }
 
 double Calculator::calculate(QList<double> &values, Block::BlockType blockType){
@@ -175,7 +175,7 @@ bool Calculator::noCycles(){
     foreach (Block *block, getLevel1Blocks()) {
         Block *iterBlock = block;
         Wire *wire = iterBlock->getOutPort()->getWire();
-        while (wire != nullptr) {
+        while (wire != NULL) {
             iterBlock->setProcessed();
             iterBlock = wire->getInPort()->getBlock();
             if (iterBlock->isProcessed()){
@@ -204,7 +204,7 @@ bool Calculator::oneOutPortUnwired(){
     int outPortsNotWired = 0;
     QList<Block *> blocks = scene->getBlocks();
     foreach (Block *block, blocks){
-        if (block->getOutPort()->getWire() == nullptr)
+        if (block->getOutPort()->getWire() == NULL)
             outPortsNotWired++;
     }
     if(outPortsNotWired != 1){

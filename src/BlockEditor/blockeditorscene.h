@@ -21,7 +21,7 @@ public:
 
     QList<Block *> getBlocks();
     QList<Wire *> getWires();
-    Port *emphPort(Port *port=nullptr);
+    Port *emphPort(Port *port=NULL);
     void unEmphPort();
 
 

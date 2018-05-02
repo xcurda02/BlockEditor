@@ -12,7 +12,7 @@ BlockEditorScene::BlockEditorScene(QObject *parent) : QGraphicsScene(parent)
     mode = MoveBlock;
     blockType = Block::addBlock;
     sceneChanged = false;
-    emphasizedPort = nullptr;
+    emphasizedPort = NULL;
 
 }
 
@@ -58,18 +58,18 @@ QList<Wire *> BlockEditorScene::getWires(){
 }
 
 Port *BlockEditorScene::emphPort(Port *port){
-    if(port == nullptr)
+    if(port == NULL)
         return emphasizedPort;
 
     port->emph();
     emphasizedPort = port;
-    return nullptr;
+    return NULL;
 }
 
 void BlockEditorScene::unEmphPort(){
     if (emphasizedPort){
         emphasizedPort->unEmph();
-        emphasizedPort = nullptr;
+        emphasizedPort = NULL;
     }
 
 }
