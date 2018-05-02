@@ -75,6 +75,7 @@ void MainWindow::createToolBox(){
     gridLayout->addWidget(createBlockButton(mulButton),1,0);
     gridLayout->addWidget(createBlockButton(divButton),1,1);
 
+
     inputsSpinBox = new QSpinBox;
     inputsSpinBox->setValue(2);
     connect(inputsSpinBox, SIGNAL(valueChanged(int)),scene , SLOT (setBlockInputs(int)));
@@ -83,6 +84,7 @@ void MainWindow::createToolBox(){
 
     gridLayout->addWidget(label);
     gridLayout->addWidget(inputsSpinBox);
+    gridLayout->addWidget(createBlockButton(invBButton),2,0);
 
 
     gridLayout->setRowStretch(3, 10);
@@ -103,6 +105,7 @@ void MainWindow::createToolbar(){
 
     QToolButton *objMoveButton = createToolbarButton(moveButton);
     QToolButton *objWireButton = createToolbarButton(wireButton);
+    QToolButton *objInvButton = createToolbarButton(invAButton);
     QToolButton *objStepButton = createToolbarButton(stepButton);
     QToolButton *objRunButton = createToolbarButton(runButton);
 
@@ -111,6 +114,7 @@ void MainWindow::createToolbar(){
     toolbarButtonGroup = new QButtonGroup(this);
     toolbarButtonGroup->addButton(objMoveButton, int(moveButton));
     toolbarButtonGroup->addButton(objWireButton, int(wireButton));
+    toolbarButtonGroup->addButton(objInvButton, int(invAButton));
     toolbarButtonGroup->addButton(objStepButton, int(stepButton));
 
     toolbarButtonGroup->addButton(objRunButton, int(runButton));
@@ -124,6 +128,7 @@ void MainWindow::createToolbar(){
     toolBar = addToolBar(tr("ToolBar"));
     toolBar->addWidget(objMoveButton);
     toolBar->addWidget(objWireButton);
+    toolBar->addWidget(objInvButton);
     toolBar->addWidget(objStepButton);
     toolBar->addWidget(objRunButton);
 }
@@ -132,12 +137,22 @@ void MainWindow::toolbarButtonGroupClicked(int button_id){
     if(button_id == stepButton){
         if (calc->oneOutPortUnwired()){
             double result;
-            if(!calc->makeStep(result)){
-                qInfo() << "byl proveden posledni krok, hodnoty se vraci na default";
-                calc->setDefaultItemValues();
+            bool exc = false;
+            try{
+                if(!calc->makeStep(result)){
+                    qInfo() << "byl proveden posledni krok, hodnoty se vraci na default";
+                    calc->setDefaultItemValues();
+                }
+            }catch(int e){
+                 qInfo() << "zmacknut cancel:" << result;
+                 exc = true;
             }
-            qInfo() << "res:" << result;
-            showMsg("Vysledek kroku: " + QString::number(result));
+            if(!exc){
+                qInfo() << "res:" << result;
+                showMsg("Vysledek kroku: " + QString::number(result));
+            }
+
+
 
          }else
             showMsg("Presne jeden vystupni port musi byt nenapojen");
@@ -147,9 +162,18 @@ void MainWindow::toolbarButtonGroupClicked(int button_id){
         if(calc->noCycles() ){
             if(calc->oneOutPortUnwired()){
                 double result;
-                while(calc->makeStep(result)){}
+                bool exc = false;
+                try{
+                    while(calc->makeStep(result)){}
+                }catch(int e){
+                     qInfo() << "zmacknut cancel:" << result;
+                     exc = true;
+                }
                 calc->setDefaultItemValues();
-                showMsg("final result is: " + QString::number(result));
+                if (!exc){
+                    showMsg("final result is: " + QString::number(result));
+                }
+
             }else{
                 showMsg("Presne jeden vystupni port musi byt nenapojen");
             }
@@ -157,9 +181,14 @@ void MainWindow::toolbarButtonGroupClicked(int button_id){
         } else {
             showMsg("Zjistena smycka ve schematu");
         }
-    } else {
+    } else if(button_id == invAButton){
+        qInfo() << "inv button clicked";
+
+    }else{
         //pro tlacitka Move(ID=6) a Wire(ID=7) v mnozine mode MoveBlock(1) InsertWire(2) proto -5 k ID
         scene->setMode(BlockEditorScene::Mode(toolbarButtonGroup->checkedId()-5));
+        blocksButtonGroup->button(int(invBButton))->setChecked(true);
+
     }
 
 }
@@ -176,12 +205,12 @@ void MainWindow::blockButtonClicked(int button_id){
     qInfo() << "button clicked: id" << button_id;
     scene->setMode(BlockEditorScene::InsertBlock);
     scene->setBlockType(Block::BlockType(button_id));
+
+    toolbarButtonGroup->button(int(invAButton))->setChecked(true);
 }
 
 void MainWindow::blockInserted(Block *block){
     qInfo() << "scene items: " << scene->items().count();
-    toolbarButtonGroup->button(int(moveButton))->setChecked(true);
-    scene->setMode(BlockEditorScene::Mode(toolbarButtonGroup->checkedId()));
     blocksButtonGroup->button(int(block->getBlockType()))->setChecked(false);
 }
 
@@ -204,6 +233,11 @@ QToolButton *MainWindow::createToolbarButton(int buttonType){
             break;
         case runButton:
             pixmap = QPixmap(":/images/images/run.png");
+            break;
+        case invAButton:
+            pixmap = QPixmap(":/images/images/run.png");
+            button->setCheckable(true);
+            button->hide();
             break;
     }
 
@@ -231,6 +265,10 @@ QAbstractButton *MainWindow::createBlockButton(int buttonType){
             break;
         case divButton:
             pixmap = QPixmap(":/images/images/divBlock.png");
+            break;
+        case invBButton:
+            pixmap = QPixmap(":/images/images/divBlock.png");
+            button->hide();
             break;
     }
 

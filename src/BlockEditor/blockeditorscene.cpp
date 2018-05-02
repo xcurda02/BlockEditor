@@ -88,7 +88,7 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 emit blockInserted(block);
 
                 //pridano po pridani InsertWire. Po vlozeni bloku s nim neslo hybat, ikdyz move tlacitko bylo zaskrknute
-                mode = MoveBlock;
+
                 break;
         }
             case InsertWire:
@@ -193,7 +193,7 @@ void BlockEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void BlockEditorScene::keyPressEvent(QKeyEvent *keyEvent){
     if (keyEvent->key() == Qt::Key_Delete){
 
-        if(selectedItems().first()->type() == Block::Type){
+        if(selectedItems().count() && selectedItems().first()->type() == Block::Type){
             qInfo() << "bude se mazat block";
             Block *block = qgraphicsitem_cast<Block *>(selectedItems().first());
             delete block;

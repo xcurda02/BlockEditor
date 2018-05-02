@@ -92,8 +92,11 @@ bool Calculator::makeStep(double &result){
                     port->emph();
                     double d = QInputDialog::getDouble(0, tr("QInputDialog::getDouble()"), tr("Amount:"), 37.56, -10000, 10000, 2, &ok);
                     port->unEmph();
+                    block->unEmph();
                     if (ok){
                         inputValues.append(d);
+                    } else{
+                        throw 20;
                     }
 
                 } else {
@@ -114,7 +117,7 @@ bool Calculator::makeStep(double &result){
     }
     result = calculate(inputValues, block->getBlockType() );
     Wire *outWire = block->getOutPort()->getWire();
-    block->unEmph();
+
     block->setProcessed();
 
     if(outWire != nullptr){         //Blok je napojen na vystupem na dalsi
