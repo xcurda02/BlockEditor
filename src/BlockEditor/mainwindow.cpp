@@ -369,11 +369,6 @@ void MainWindow::save()
             outputStream << scene->blocks[i]->ports.count()-1;
             outputStream << ";";
             for(int j=0; j != scene->blocks[i]->ports.length()-1; ++j){
-                //if(scene->blocks[i]->ports[j]->isValueSet()){
-                //    outputStream << "v";
-                //    outputStream << scene->blocks[i]->ports[j]->getValue();
-                //    outputStream << ";";
-                //}
                 if (scene->blocks[i]->ports[j]->getWire()!= NULL){
                     outputStream << "w";
                     int blockNum;
@@ -417,22 +412,15 @@ void MainWindow::open()
                 file.errorString());
             return;
         }
-
-        QList<QGraphicsItem*> all = scene->items();
-        for (int i = 0; i < all.size(); i++)
-        {
-            QGraphicsItem *gi = all[i];
-            scene->removeItem(gi);
-            delete gi;
+        for(int i = 0;i<scene->blocks.length();++i){
+            delete scene->blocks[i];
         }
         scene->blocks.clear();
         //destruktor na bloky?
-
         QTextStream in(&file);
         //cteni souboru po radcich (co radek to jeden blok)
         while (!in.atEnd()){
             QString line = in.readLine();;
-
             //parsovani stringu
             QRegExp rx("[,;]");
             QStringList list = line.split(rx, QString::SkipEmptyParts);
@@ -454,7 +442,6 @@ void MainWindow::open()
                 break;
 
             }
-
             Block *block = new Block(blockType);
             scene->addBlock(block);
             scene->addItem(block);
@@ -462,7 +449,6 @@ void MainWindow::open()
             qreal x = list[2].toDouble(&ok); qreal y = list[3].toDouble(&ok);
             block->setPos(x,y);
             block->setZValue(1000.0);
-
 
             double blockTopEdge = abs(block->boundingRect().topRight().x() - block->boundingRect().topLeft().x());
             qInfo() << "--(block)block top edge : " << blockTopEdge;
@@ -479,13 +465,11 @@ void MainWindow::open()
             scene->addItem(port);
             block->addPort(port);
 
-
             emit blockInserted(block);
         }
 
         file.seek(0);
         int blockIndex = 0;
-
         //pridani wires pripadne nastaveni hodnoty portu
         while(!in.atEnd()){
             QString line = in.readLine();;
@@ -502,7 +486,6 @@ void MainWindow::open()
                     startItem->addWire(wire);
                     endItem->addWire(wire);
                     wire->setZValue(1000.0);
-
                     scene->addItem(wire);
                     wire->updatePosition();
                 }
