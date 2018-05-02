@@ -87,8 +87,11 @@ bool Calculator::makeStep(double &result){
                     //dialog na nacteni hodnoty
                     block->emph();
 
+
                     bool ok;
+                    port->emph();
                     double d = QInputDialog::getDouble(0, tr("QInputDialog::getDouble()"), tr("Amount:"), 37.56, -10000, 10000, 2, &ok);
+                    port->unEmph();
                     if (ok){
                         inputValues.append(d);
                     }

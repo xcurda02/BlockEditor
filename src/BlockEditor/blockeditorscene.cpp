@@ -111,12 +111,27 @@ void BlockEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent){
         wire->setLine(newLine);
 
         QList<QGraphicsItem *> itemsHere = items(mouseEvent->scenePos());
+        qInfo() << "Items here count:" << itemsHere.count();
+
+        bool emphed = false;
+        foreach (QGraphicsItem *item, itemsHere) {
+            if(item->type() == Port::Type){
+                Port *port = qgraphicsitem_cast<Port *>(item);
+                emphPort(port);
+                emphed = true;
+            }
+        }
+        if (!emphed)
+            unEmphPort();
+
+        /*
         if (itemsHere.count() && itemsHere.first()->type() == Port::Type){
             Port *port = qgraphicsitem_cast<Port *>(itemsHere.first());
             emphPort(port);
         }else{
+            qInfo() << "unemph port";
             unEmphPort();
-        }
+        }*/
 
     } else if (mode == MoveBlock){
 

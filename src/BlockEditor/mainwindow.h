@@ -35,10 +35,7 @@ private slots:
 
     void blockInserted(Block *block);
     void blockButtonClicked(int button_id);
-    void pointerGroupClicked(int button_id);
-
-
-    void actionTypeGroupClicked(int button_id);
+    void toolbarButtonGroupClicked(int button_id);
 
 
 private:
@@ -47,8 +44,7 @@ private:
     Ui::MainWindow *ui;
 
     QButtonGroup *blocksButtonGroup;
-    QButtonGroup *pointerTypeGroup;
-    QButtonGroup *actionTypeGroup;
+    QButtonGroup *toolbarButtonGroup;
 
 
     void showMsg(QString msg);
@@ -67,8 +63,9 @@ private:
     QGraphicsView *view;
 
     void createToolBox();
-    void createToolBar();
-    QAbstractButton *createBlockButton(const QString &text, int buttonType);
+    void createToolbar();
+    QAbstractButton *createBlockButton(int buttonType);
+    QToolButton *createToolbarButton(int buttonType);
 
 };
 

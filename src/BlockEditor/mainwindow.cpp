@@ -15,9 +15,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(scene, SIGNAL(blockInserted(Block*)),
                 this, SLOT(blockInserted(Block*)));
-
     createToolBox();
-    createToolBar();
+    createToolbar();
+
     scene->setBlockInputs(inputsSpinBox->value());
 
 
@@ -70,10 +70,10 @@ void MainWindow::createToolBox(){
 
 
 
-    gridLayout->addWidget(createBlockButton("+",addButton),0,0);
-    gridLayout->addWidget(createBlockButton("-",subButton),0,1);
-    gridLayout->addWidget(createBlockButton("*",mulButton),1,0);
-    gridLayout->addWidget(createBlockButton("/",divButton),1,1);
+    gridLayout->addWidget(createBlockButton(addButton),0,0);
+    gridLayout->addWidget(createBlockButton(subButton),0,1);
+    gridLayout->addWidget(createBlockButton(mulButton),1,0);
+    gridLayout->addWidget(createBlockButton(divButton),1,1);
 
     inputsSpinBox = new QSpinBox;
     inputsSpinBox->setValue(2);
@@ -98,47 +98,28 @@ void MainWindow::createToolBox(){
 
 }
 
-//pridano
-void MainWindow::pointerGroupClicked(int)
-{
-    //pro tlacitka Move(ID=6) a Wire(ID=7) v mnozine mode MoveBlock(1) InsertWire(2) proto -5 k ID
-    scene->setMode(BlockEditorScene::Mode(pointerTypeGroup->checkedId()-5));
-}
+void MainWindow::createToolbar(){
 
-void MainWindow::createToolBar(){
 
-    QToolButton *objMoveButton = new QToolButton;
-    objMoveButton->setCheckable(true);
-    objMoveButton->setChecked(true);
-    objMoveButton->setText("M");
+    QToolButton *objMoveButton = createToolbarButton(moveButton);
+    QToolButton *objWireButton = createToolbarButton(wireButton);
+    QToolButton *objStepButton = createToolbarButton(stepButton);
+    QToolButton *objRunButton = createToolbarButton(runButton);
 
-    QToolButton *objWireButton = new QToolButton;
-    objWireButton->setCheckable(true);
-    objWireButton->setText("W");
+    qInfo() << "buttons created";
 
-    pointerTypeGroup = new QButtonGroup(this);
-    pointerTypeGroup->addButton(objMoveButton, int(moveButton));
-    pointerTypeGroup->addButton(objWireButton, int(wireButton));
+    toolbarButtonGroup = new QButtonGroup(this);
+    toolbarButtonGroup->addButton(objMoveButton, int(moveButton));
+    toolbarButtonGroup->addButton(objWireButton, int(wireButton));
+    toolbarButtonGroup->addButton(objStepButton, int(stepButton));
+
+    toolbarButtonGroup->addButton(objRunButton, int(runButton));
+
+    qInfo() << "added to group";
 
     //pridano
-    connect(pointerTypeGroup, SIGNAL(buttonClicked(int)),
-            this, SLOT(pointerGroupClicked(int)));
-
-
-    actionTypeGroup = new QButtonGroup(this);
-    QToolButton *objStepButton = new QToolButton;
-    objStepButton->setText("S");
-
-    QToolButton *objRunButton = new QToolButton;
-    objRunButton->setText("R");
-
-    actionTypeGroup->addButton(objStepButton, int(stepButton));
-    actionTypeGroup->addButton(objRunButton, int(runButton));
-
-    connect(actionTypeGroup, SIGNAL(buttonClicked(int)), this, SLOT(actionTypeGroupClicked(int)));
-
-
-
+    connect(toolbarButtonGroup, SIGNAL(buttonClicked(int)),
+            this, SLOT(toolbarButtonGroupClicked(int)));
 
     toolBar = addToolBar(tr("ToolBar"));
     toolBar->addWidget(objMoveButton);
@@ -147,7 +128,7 @@ void MainWindow::createToolBar(){
     toolBar->addWidget(objRunButton);
 }
 
-void MainWindow::actionTypeGroupClicked(int button_id){
+void MainWindow::toolbarButtonGroupClicked(int button_id){
     if(button_id == stepButton){
         if (calc->oneOutPortUnwired()){
             double result;
@@ -158,9 +139,9 @@ void MainWindow::actionTypeGroupClicked(int button_id){
             qInfo() << "res:" << result;
             showMsg("Vysledek kroku: " + QString::number(result));
 
-         }else{
+         }else
             showMsg("Presne jeden vystupni port musi byt nenapojen");
-        }
+
     } else if(button_id == runButton){
         calc->setDefaultItemValues();
         if(calc->noCycles() ){
@@ -176,9 +157,13 @@ void MainWindow::actionTypeGroupClicked(int button_id){
         } else {
             showMsg("Zjistena smycka ve schematu");
         }
+    } else {
+        //pro tlacitka Move(ID=6) a Wire(ID=7) v mnozine mode MoveBlock(1) InsertWire(2) proto -5 k ID
+        scene->setMode(BlockEditorScene::Mode(toolbarButtonGroup->checkedId()-5));
     }
 
 }
+
 void MainWindow::showMsg(QString msg){
     QMessageBox msgBox;
     msgBox.setText(msg);
@@ -195,14 +180,43 @@ void MainWindow::blockButtonClicked(int button_id){
 
 void MainWindow::blockInserted(Block *block){
     qInfo() << "scene items: " << scene->items().count();
-    pointerTypeGroup->button(int(moveButton))->setChecked(true);
-    scene->setMode(BlockEditorScene::Mode(pointerTypeGroup->checkedId()));
+    toolbarButtonGroup->button(int(moveButton))->setChecked(true);
+    scene->setMode(BlockEditorScene::Mode(toolbarButtonGroup->checkedId()));
     blocksButtonGroup->button(int(block->getBlockType()))->setChecked(false);
 }
 
 
 
-QAbstractButton *MainWindow::createBlockButton(const QString &text, int buttonType){
+QToolButton *MainWindow::createToolbarButton(int buttonType){
+    QToolButton *button = new QToolButton;
+    QPixmap pixmap;
+    switch(buttonType){
+        case moveButton:
+            pixmap = QPixmap(":/images/images/move.png");
+            button->setCheckable(true);
+            break;
+        case wireButton:
+            pixmap = QPixmap(":/images/images/wire.png");
+            button->setCheckable(true);
+            break;
+        case stepButton:
+            pixmap = QPixmap(":/images/images/step.png");
+            break;
+        case runButton:
+            pixmap = QPixmap(":/images/images/run.png");
+            break;
+    }
+
+    QIcon ButtonIcon(pixmap);
+    button->setIcon(ButtonIcon);
+    button->setIconSize(QSize(30,30));
+    button->setMinimumSize(30,30);
+
+    return button;
+}
+
+
+QAbstractButton *MainWindow::createBlockButton(int buttonType){
     QToolButton *button = new QToolButton;
     QPixmap pixmap;
     switch(buttonType){

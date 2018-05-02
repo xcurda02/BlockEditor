@@ -8,5 +8,9 @@
         <file>images/emphDivBlock.png</file>
         <file>images/emphMulBlock.png</file>
         <file>images/emphSubBlock.png</file>
+        <file>images/move.png</file>
+        <file>images/run.png</file>
+        <file>images/step.png</file>
+        <file>images/wire.png</file>
     </qresource>
 </RCC>
