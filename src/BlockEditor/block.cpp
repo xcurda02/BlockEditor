@@ -20,6 +20,11 @@ Block::Block(BlockType blockType, QGraphicsItem *parent): QGraphicsPixmapItem(pa
     processed = false;
     toSkip = false;
 }
+Block::~Block(){
+    foreach (Port *port, ports) {
+        delete port;
+    }
+}
 
 Block::BlockType Block::getBlockType(){
     return blockType;
@@ -50,8 +55,8 @@ void Block::emph(){
             pixmap = QPixmap(":/images/images/emphDivBlock.png");
             break;
     }
-
-    setPixmap(pixmap);
+    QPixmap scaled_pix = pixmap.scaled(100,100);
+    setPixmap(scaled_pix);
 }
 
 void Block::unEmph(){
@@ -70,8 +75,8 @@ void Block::unEmph(){
             pixmap = QPixmap(":/images/images/divBlock.png");
             break;
     }
-
-    setPixmap(pixmap);
+    QPixmap scaled_pix = pixmap.scaled(100,100);
+    setPixmap(scaled_pix);
 }
 
 void Block::setProcessed(){
@@ -110,10 +115,10 @@ QVariant Block::itemChange(GraphicsItemChange change, const QVariant & value){
             Port *port = ports[i-1];
 
             if (port->isInputPort()){
-                port->setRect(x()+(i*margin),y()-5,10,10);
+                port->setRect(x()+(i*margin)-5,y()-5,10,10);
             } else{
                 double blockHeight = abs(boundingRect().topRight().y() - boundingRect().bottomRight().y());
-                port->setRect(x()+(blockTopEdge/2),y()+blockHeight-5,10,10);
+                port->setRect(x()+(blockTopEdge/2)-5,y()+blockHeight-5,10,10);
             }
 
 

@@ -174,14 +174,16 @@ bool Calculator::noCycles(){
             iterBlock = wire->getInPort()->getBlock();
             if (iterBlock->isProcessed()){
                 qInfo() << "ERROR: smycka";
+                setBlocksNotProcessed();
                 return false;
             }
             wire = iterBlock->getOutPort()->getWire();
 
 
         }
+        setBlocksNotProcessed();
     }
-    setBlocksNotProcessed();
+
     qInfo() << "cykly nenalezeny";
     return true;
 }

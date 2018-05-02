@@ -2,6 +2,7 @@
 #define BLOCKEDITORSCENE_H
 
 #include <QGraphicsScene>
+#include <QKeyEvent>
 #include <QtCore>
 #include "block.h"
 #include "port.h"
@@ -14,6 +15,8 @@ public:
     explicit BlockEditorScene(QObject *parent=0);
     QList<Block *> getBlocks();
     QList<Wire *> getWires();
+    Port *emphPort(Port *port=nullptr);
+    void unEmphPort();
 
 
 public slots:
@@ -29,8 +32,10 @@ private:
     Block::BlockType blockType;
     QGraphicsLineItem *wire;
     int blockInputs;
+    Port *emphasizedPort;
 
 protected:
+    void keyPressEvent(QKeyEvent *keyEvent) Q_DECL_OVERRIDE;
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;

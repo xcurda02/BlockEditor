@@ -10,6 +10,7 @@ BlockEditorScene::BlockEditorScene(QObject *parent) : QGraphicsScene(parent)
 {
     mode = MoveBlock;
     blockType = Block::addBlock;
+    emphasizedPort = nullptr;
 
 }
 
@@ -43,6 +44,21 @@ QList<Wire *> BlockEditorScene::getWires(){
     return wires;
 }
 
+Port *BlockEditorScene::emphPort(Port *port){
+    if(port == nullptr)
+        return emphasizedPort;
+
+    port->emph();
+    emphasizedPort = port;
+    return nullptr;
+}
+
+void BlockEditorScene::unEmphPort(){
+    if (emphasizedPort){
+        emphasizedPort->unEmph();
+        emphasizedPort = nullptr;
+    }
+}
 
 void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
     if (mouseEvent->button() == Qt::LeftButton){
@@ -58,13 +74,13 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 qInfo() << "--(block)block top edge : " << blockTopEdge;
                 double margin = (double) blockTopEdge / (double)(blockInputs+1);
                 for(int i = 1; i < blockInputs+1; i++){
-                    Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(i*margin),mouseEvent->scenePos().y()-5),true, block);
+                    Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(i*margin)-5,mouseEvent->scenePos().y()-5),true, block);
                     port->setZValue(1001.0);
                     addItem(port);
                     block->addPort(port);
                 }
                 double blockHeight = abs(block->boundingRect().topRight().y() - block->boundingRect().bottomRight().y());
-                Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(blockTopEdge/2),mouseEvent->scenePos().y()+blockHeight-5),false, block);
+                Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(blockTopEdge/2)-5,mouseEvent->scenePos().y()+blockHeight-5),false, block);
                 addItem(port);
                 block->addPort(port);
 
@@ -93,8 +109,19 @@ void BlockEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent){
     if (mode == InsertWire && wire != NULL){//predelano z nullptr na NULL
         QLineF newLine(wire->line().p1(), mouseEvent->scenePos());
         wire->setLine(newLine);
+
+        QList<QGraphicsItem *> itemsHere = items(mouseEvent->scenePos());
+        if (itemsHere.count() && itemsHere.first()->type() == Port::Type){
+            Port *port = qgraphicsitem_cast<Port *>(itemsHere.first());
+            emphPort(port);
+        }else{
+            unEmphPort();
+        }
+
     } else if (mode == MoveBlock){
 
+        QGraphicsScene::mouseMoveEvent(mouseEvent);
+    } else if (mode == InsertWire && wire == NULL){
         QGraphicsScene::mouseMoveEvent(mouseEvent);
     }
 }
@@ -128,11 +155,6 @@ void BlockEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             Port *startItem = qgraphicsitem_cast<Port *>(startItems.first());
             Port *endItem = qgraphicsitem_cast<Port *>(endItems.first());
 
-            //konstruktoru wire se predavaji spatne souradnice portu
-            printf("x - %f\n",startItem->x());
-            printf("y - %f\n",startItem->y());
-            printf("xx - %f\n",endItem->x());
-            printf("yy - %f\n",endItem->y());
             Wire *wire = new Wire(startItem, endItem);
 
 
@@ -151,5 +173,17 @@ void BlockEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
     wire = 0;
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
+}
+
+void BlockEditorScene::keyPressEvent(QKeyEvent *keyEvent){
+    if (keyEvent->key() == Qt::Key_Delete){
+
+        if(selectedItems().first()->type() == Block::Type){
+            qInfo() << "bude se mazat block";
+            Block *block = qgraphicsitem_cast<Block *>(selectedItems().first());
+            delete block;
+
+        }
+    }
 }
 

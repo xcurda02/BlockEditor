@@ -12,20 +12,25 @@ class Port : public QGraphicsEllipseItem
 
 public:
     Port(QPointF blockPos,bool inputPort, Block *block, QGraphicsItem *parent=0);
+    ~Port();
     void addWire(Wire *wire);
+    void removeWire();
     Wire *getWire();
 
     bool isInputPort();
     Block *getBlock();
 
-
+    void emph();
+    void unEmph();
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 private:
     Block *block;
     bool inputPort;
     Wire *wire;
+    bool emphasized;
 
 
 };

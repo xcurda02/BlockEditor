@@ -15,6 +15,7 @@ public:
     enum { Type = UserType + 15};
     enum BlockType {addBlock, subBlock, mulBlock, divBlock};
     Block(BlockType blockType, QGraphicsItem *parent = 0);
+    ~Block();
     BlockType getBlockType();
     Port *getOutPort();
     void addPort(Port *port);

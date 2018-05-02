@@ -19,6 +19,7 @@ Wire::Wire(Port *startItem,  Port *endItem, QGraphicsItem *parent)
 
        valueSet = false;
 }
+
 bool Wire::isValueSet(){
     return valueSet;
 }

@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     view = new QGraphicsView(scene);
+    view->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     QHBoxLayout *layout = new QHBoxLayout;
 
     QVBoxLayout *vlayout = new QVBoxLayout;
@@ -155,28 +156,33 @@ void MainWindow::actionTypeGroupClicked(int button_id){
                 calc->setDefaultItemValues();
             }
             qInfo() << "res:" << result;
-            QMessageBox msgBox;
-            msgBox.setText("output is: " + QString::number(result));
-            msgBox.exec();
+            showMsg("Vysledek kroku: " + QString::number(result));
 
          }else{
-            QMessageBox msgBox;
-            msgBox.setText("Presne jeden vystupni port musi byt nenapojen");
-            msgBox.exec();
+            showMsg("Presne jeden vystupni port musi byt nenapojen");
         }
-    } else {
+    } else if(button_id == runButton){
         calc->setDefaultItemValues();
-        if(calc->noCycles()){
+        if(calc->noCycles() ){
+            if(calc->oneOutPortUnwired()){
+                double result;
+                while(calc->makeStep(result)){}
+                calc->setDefaultItemValues();
+                showMsg("final result is: " + QString::number(result));
+            }else{
+                showMsg("Presne jeden vystupni port musi byt nenapojen");
+            }
 
-            double result;
-            while(calc->makeStep(result)){}
-
-            QMessageBox msgBox;
-            msgBox.setText("final result is: " + QString::number(result));
-            msgBox.exec();
+        } else {
+            showMsg("Zjistena smycka ve schematu");
         }
     }
 
+}
+void MainWindow::showMsg(QString msg){
+    QMessageBox msgBox;
+    msgBox.setText(msg);
+    msgBox.exec();
 }
 
 
@@ -216,18 +222,12 @@ QAbstractButton *MainWindow::createBlockButton(const QString &text, int buttonTy
 
     QIcon ButtonIcon(pixmap);
     button->setIcon(ButtonIcon);
-    button->setIconSize(QSize(65,65));
+    button->setIconSize(QSize(50,50));
     button->setCheckable(true);
-    button->setMinimumSize(60,60);
+    button->setMinimumSize(50,50);
     blocksButtonGroup->addButton(button, int(buttonType));
 
     return button;
 
-}
-
-bool MainWindow::getDoubleFromDialog(double &value){
-    bool ok;
-    value = QInputDialog::getDouble(0, tr("Input"), tr("Input value:"), 5.25252, -2147483647, 2147483647, 5, &ok);
-    return ok;
 }
 

@@ -30,7 +30,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    static bool getDoubleFromDialog(double &value);
 
 private slots:
 
@@ -51,6 +50,8 @@ private:
     QButtonGroup *pointerTypeGroup;
     QButtonGroup *actionTypeGroup;
 
+
+    void showMsg(QString msg);
 
     QToolBox *toolBox;
     QToolBar *toolBar;
