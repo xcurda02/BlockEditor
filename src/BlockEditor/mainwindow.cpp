@@ -303,6 +303,10 @@ QAbstractButton *MainWindow::createBlockButton(int buttonType){
 
 }
 
+//! úprava close event
+/*!
+    \brief Před ukončením programu proběhne dotaz na uložení, pokud byly provedeny změny ve schématu.
+*/
 void MainWindow::closeEvent(QCloseEvent *event){
     if(scene->getSceneChanged()){
         event->ignore();
@@ -314,6 +318,9 @@ void MainWindow::closeEvent(QCloseEvent *event){
 }
 
 
+//! Vytvoření akci pro vrchní menu
+/*!
+*/
 void MainWindow::createActions()
 {
     aboutAction = new QAction(tr("A&bout"), this);
@@ -329,6 +336,9 @@ void MainWindow::createActions()
     connect(openAction, SIGNAL(triggered()), this, SLOT(save()));
 }
 
+//!Vytvoření vrchního menu
+/*!
+*/
 void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
@@ -340,12 +350,19 @@ void MainWindow::createMenus()
     aboutMenu->addAction(aboutAction);
 }
 
+//! MessageBox About
+/*!
+*/
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About Block Editor"),
                        tr("This is Block Editor."));
 }
 
+//! MessageBox Save
+/*!
+ \brief akce uložení schématu.
+*/
 void MainWindow::save()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
@@ -362,15 +379,16 @@ void MainWindow::save()
             return;
         }
         //zapis do souboru
-        for (int i = 0; i != scene->blocks.length(); ++i){
+        QList<Block*> blocks = scene->getBlocks();
+        for (int i = 0; i != blocks.length(); ++i){
             int blockType;
-            if (scene->blocks[i]->getBlockType() == Block::addBlock)
+            if (blocks[i]->getBlockType() == Block::addBlock)
                 blockType = 0;
-            else if (scene->blocks[i]->getBlockType() == Block::subBlock)
+            else if (blocks[i]->getBlockType() == Block::subBlock)
                 blockType = 1;
-            else if (scene->blocks[i]->getBlockType() == Block::mulBlock)
+            else if (blocks[i]->getBlockType() == Block::mulBlock)
                 blockType = 2;
-            else if (scene->blocks[i]->getBlockType() == Block::divBlock)
+            else if (blocks[i]->getBlockType() == Block::divBlock)
                 blockType = 3;
             QString text;
             QTextStream outputStream(&file);
@@ -378,18 +396,18 @@ void MainWindow::save()
             outputStream << ";";
             outputStream << blockType;
             outputStream << ";";
-            outputStream << scene->blocks[i]->x();
+            outputStream << blocks[i]->x();
             outputStream << ",";
-            outputStream << scene->blocks[i]->y();
+            outputStream << blocks[i]->y();
             outputStream << ";";
-            outputStream << scene->blocks[i]->ports.count()-1;
+            outputStream << blocks[i]->ports.count()-1;
             outputStream << ";";
-            for(int j=0; j != scene->blocks[i]->ports.length()-1; ++j){
-                if (scene->blocks[i]->ports[j]->getWire()!= NULL){
+            for(int j=0; j != blocks[i]->ports.length()-1; ++j){
+                if (blocks[i]->ports[j]->getWire()!= NULL){
                     outputStream << "w";
                     int blockNum;
-                    for(int k=0; k!=scene->blocks.length();++k){
-                        if(scene->blocks[k]->getOutPort()==scene->blocks[i]->ports[j]->getWire()->getEndItem() || scene->blocks[k]->getOutPort()==scene->blocks[i]->ports[j]->getWire()->getStartItem()){
+                    for(int k=0; k!=blocks.length();++k){
+                        if(blocks[k]->getOutPort()==blocks[i]->ports[j]->getWire()->getEndItem() || blocks[k]->getOutPort()==blocks[i]->ports[j]->getWire()->getStartItem()){
                             blockNum=k;
                         }
                     }
@@ -407,6 +425,11 @@ void MainWindow::save()
     }
 }
 
+
+//! MessageBox Open
+/*!
+ \brief akce otevření schématu.
+*/
 void MainWindow::open()
 {
     if(scene->getSceneChanged()){
@@ -428,10 +451,11 @@ void MainWindow::open()
                 file.errorString());
             return;
         }
-        for(int i = 0;i<scene->blocks.length();++i){
-            delete scene->blocks[i];
+        QList<Block*> blocks=scene->getBlocks();
+        for(int i = 0;i<blocks.length();++i){
+            delete blocks[i];
         }
-        scene->blocks.clear();
+        blocks.clear();
         //destruktor na bloky?
         QTextStream in(&file);
         //cteni souboru po radcich (co radek to jeden blok)
@@ -459,7 +483,6 @@ void MainWindow::open()
 
             }
             Block *block = new Block(blockType);
-            scene->addBlock(block);
             scene->addItem(block);
             bool ok;
             qreal x = list[2].toDouble(&ok); qreal y = list[3].toDouble(&ok);
@@ -487,6 +510,7 @@ void MainWindow::open()
         file.seek(0);
         int blockIndex = 0;
         //pridani wires pripadne nastaveni hodnoty portu
+        blocks=scene->getBlocks();
         while(!in.atEnd()){
             QString line = in.readLine();;
             QRegExp rx("[,;]");
@@ -496,8 +520,8 @@ void MainWindow::open()
                 if(list[i][0]=='w'){
                     QString str = list[i];
                     str.remove(0,1);
-                    Port *startItem = (scene->blocks[blockIndex]->ports[i-5]);
-                    Port *endItem   = (scene->blocks[str.toInt()]->getOutPort());
+                    Port *startItem = (blocks[blockIndex]->ports[i-5]);
+                    Port *endItem   = (blocks[str.toInt()]->getOutPort());
                     Wire *wire = new Wire(startItem, endItem);
                     startItem->addWire(wire);
                     endItem->addWire(wire);

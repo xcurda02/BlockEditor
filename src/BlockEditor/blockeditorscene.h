@@ -13,9 +13,6 @@ class BlockEditorScene : public QGraphicsScene
 public:
     enum Mode {InsertBlock, MoveBlock, InsertWire};
     explicit BlockEditorScene(QObject *parent=0);
-
-    QList<Block*> blocks;
-    void addBlock(Block *block);
     void setSceneChanged(bool val);
     bool getSceneChanged();
 

@@ -28,10 +28,6 @@ void BlockEditorScene::setBlockInputs(int inputs){
     blockInputs = inputs;
 }
 
-
-void BlockEditorScene::addBlock(Block *block){
-    blocks.append(block);
-}
 void BlockEditorScene::setSceneChanged(bool val){
     sceneChanged=val;
 }
@@ -83,7 +79,7 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
         {
                 Block *block = new Block(blockType);
                 this->setSceneChanged(true);
-                addBlock(block);
+
                 addItem(block);
                 block->setPos(mouseEvent->scenePos());
                 block->setZValue(1000.0);
