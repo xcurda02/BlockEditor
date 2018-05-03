@@ -78,8 +78,8 @@ bool Calculator::makeStep(double &result){
     QList<double> inputValues;
     unSkipAll();
     
-    while(inputValues.empty() && ((block = getNextBlock()) != NULL)){
-
+    while(inputValues.empty()){
+        block = getNextBlock();
         foreach (Port *port, block->getPorts()) {
             if(port->isInputPort()){
                 if (port->getWire() == NULL){
@@ -96,7 +96,7 @@ bool Calculator::makeStep(double &result){
                     if (ok){
                         inputValues.append(d);
                     } else{
-                        throw 20;
+                        throw CANCEL_EXCEPTION;
                     }
 
                 } else {
@@ -115,7 +115,10 @@ bool Calculator::makeStep(double &result){
         }
 
     }
+    bool zero_div = false;
+
     result = calculate(inputValues, block->getBlockType() );
+
     Wire *outWire = block->getOutPort()->getWire();
 
     block->setProcessed();
@@ -157,6 +160,8 @@ double Calculator::calculate(QList<double> &values, Block::BlockType blockType){
             values[0] *= values[i];
             break;
         case Block::divBlock:
+            if (values[i] == 0)
+                throw ZERO_DIV_EXCEPTION;
             values[0] /= values[i];
             break;
         }

@@ -61,6 +61,7 @@ QList<Wire *> BlockEditorScene::getWires(){
 Port *BlockEditorScene::emphPort(Port *port){
     if(port == NULL)
         return emphasizedPort;
+    unEmphPort();
 
     port->emph();
     emphasizedPort = port;
@@ -141,6 +142,7 @@ void BlockEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 Port *port = qgraphicsitem_cast<Port *>(item);
                 emphPort(port);
                 emphed = true;
+                break;
             }
         }
         if (!emphed)

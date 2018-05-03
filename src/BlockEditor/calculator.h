@@ -9,8 +9,8 @@
 #include "wire.h"
 #include "mainwindow.h"
 
-#define CYCLE_EXCEPTION 1
-#define LAST_STEP_EXCEPTION 2
+#define CANCEL_EXCEPTION 1
+#define ZERO_DIV_EXCEPTION 2
 
 QT_BEGIN_NAMESPACE
 class BlockEditorScene;

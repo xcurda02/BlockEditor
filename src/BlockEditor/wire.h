@@ -43,6 +43,7 @@ protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) Q_DECL_OVERRIDE;
 
 private:
+    QPointF getMiddlePoint(QGraphicsItem *item);
     Port *startItem;
     Port *endItem;
     QColor myColor;

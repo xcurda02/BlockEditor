@@ -147,12 +147,17 @@ void MainWindow::toolbarButtonGroupClicked(int button_id){
                     calc->setDefaultItemValues();
                 }
             }catch(int e){
-                 qInfo() << "zmacknut cancel:" << result;
+                if(e == CANCEL_EXCEPTION){
+                    qInfo() << "zmacknut cancel:" << result;
+                } else if(e == ZERO_DIV_EXCEPTION) {
+                    calc->setDefaultItemValues();
+                    showMsg("Dividing by zero");
+                }
                  exc = true;
             }
             if(!exc){
                 qInfo() << "res:" << result;
-                showMsg("Vysledek kroku: " + QString::number(result));
+                showMsg("Step result: " + QString::number(result));
             }
 
 
@@ -169,12 +174,17 @@ void MainWindow::toolbarButtonGroupClicked(int button_id){
                 try{
                     while(calc->makeStep(result)){}
                 }catch(int e){
-                     qInfo() << "zmacknut cancel:" << result;
+                    if(e == CANCEL_EXCEPTION){
+                        qInfo() << "zmacknut cancel:" << result;
+                    } else if(e == ZERO_DIV_EXCEPTION) {
+                        showMsg("Dividing by zero");
+                    }
+
                      exc = true;
                 }
                 calc->setDefaultItemValues();
                 if (!exc){
-                    showMsg("final result is: " + QString::number(result));
+                    showMsg("Final result: " + QString::number(result));
                 }
 
             }else{

@@ -1,6 +1,6 @@
 #include "wire.h"
 #include <stdio.h>
-#include <math.h>
+#include <cmath>
 
 #include <QPen>
 #include <QPainter>
@@ -14,7 +14,7 @@ Wire::Wire(Port *startItem,  Port *endItem, QGraphicsItem *parent)
        this->startItem = startItem;
        this->endItem = endItem;
        setFlag(QGraphicsItem::ItemIsSelectable, true);
-       setPen(QPen(Qt::black, 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+       setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
        qInfo() << "wire created";
 
        valueSet = false;
@@ -56,11 +56,19 @@ QRectF Wire::boundingRect() const
         .normalized()
         .adjusted(-extra, -extra, extra, extra);
 }
-
+QPointF Wire::getMiddlePoint(QGraphicsItem *item){
+    double width = fabs(item->boundingRect().topLeft().x() - item->boundingRect().topRight().x());
+    double height = fabs(item->boundingRect().topRight().y() - item->boundingRect().bottomRight().y());
+    return QPointF(width/2,height/2);
+}
 
 void Wire::updatePosition()
 {
-    QLineF line(QPointF(startItem->boundingRect().topLeft().x(),startItem->boundingRect().topLeft().y()), QPointF(endItem->boundingRect().topLeft().x(),endItem->boundingRect().topLeft().y()));
+    qInfo() << "wire: update position";
+    QPointF startMiddlePoint = getMiddlePoint(startItem);
+    QPointF endMiddlePoint = getMiddlePoint(endItem);
+    QLineF line(QPointF(startItem->boundingRect().topLeft().x()+startMiddlePoint.x()-0.5,startItem->boundingRect().topLeft().y()+startMiddlePoint.y()-0.5),
+                QPointF(endItem->boundingRect().topLeft().x()+endMiddlePoint.x()-0.5,endItem->boundingRect().topLeft().y()+endMiddlePoint.y()-0.5));
     setLine(line);
 }
 
@@ -69,9 +77,10 @@ void Wire::updatePosition()
 void Wire::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
           QWidget *)
 {
+    qInfo() << "wire: paint";
     QPen myPen = pen();
     painter->setBrush(Qt::black);
-    painter->setPen(QPen(Qt::black, 4));
-    QLineF line(QPointF(startItem->boundingRect().topLeft().x()+5.0,startItem->boundingRect().topLeft().y()+5.0), QPointF(endItem->boundingRect().topLeft().x()+5.0,endItem->boundingRect().topLeft().y()+5.0));
-    painter->drawLine(line);
+    painter->setPen(QPen(Qt::black, 1));
+    updatePosition();
+    painter->drawLine(line());
 }
