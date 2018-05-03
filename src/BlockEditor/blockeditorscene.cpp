@@ -4,6 +4,7 @@
 #include "mainwindow.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QtMath>
+#include <cmath>
 #include <QDebug>
 
 
@@ -87,7 +88,7 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 block->setZValue(1000.0);
 
 
-                double blockTopEdge = abs(block->boundingRect().topRight().x() - block->boundingRect().topLeft().x());
+                double blockTopEdge = fabs(block->boundingRect().topRight().x() - block->boundingRect().topLeft().x());
                 qInfo() << "--(block)block top edge : " << blockTopEdge;
                 double margin = (double) blockTopEdge / (double)(blockInputs+1);
                 for(int i = 1; i < blockInputs+1; i++){
@@ -96,7 +97,7 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                     addItem(port);
                     block->addPort(port);
                 }
-                double blockHeight = abs(block->boundingRect().topRight().y() - block->boundingRect().bottomRight().y());
+                double blockHeight = fabs(block->boundingRect().topRight().y() - block->boundingRect().bottomRight().y());
 
 
                 Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(blockTopEdge/2)-5,mouseEvent->scenePos().y()+blockHeight-5),false, block);
