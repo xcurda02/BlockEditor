@@ -1,6 +1,7 @@
 #include <QDebug>
 #include <QBrush>
 #include <QPainter>
+#include <cmath>
 #include "wire.h"
 #include "block.h"
 
@@ -108,7 +109,7 @@ QList<Port*> Block::getPorts(){
 QVariant Block::itemChange(GraphicsItemChange change, const QVariant & value){
     if(change == QGraphicsItem::ItemPositionChange){
 
-        double blockTopEdge = abs(boundingRect().topRight().x() - boundingRect().topLeft().x());
+        double blockTopEdge = fabs(boundingRect().topRight().x() - boundingRect().topLeft().x());
         double margin = blockTopEdge / (ports.count());
 
         for (int i = 1; i < ports.count()+1; i++){
@@ -117,7 +118,7 @@ QVariant Block::itemChange(GraphicsItemChange change, const QVariant & value){
             if (port->isInputPort()){
                 port->setRect(x()+(i*margin)-5,y()-5,10,10);
             } else{
-                double blockHeight = abs(boundingRect().topRight().y() - boundingRect().bottomRight().y());
+                double blockHeight = fabs(boundingRect().topRight().y() - boundingRect().bottomRight().y());
                 port->setRect(x()+(blockTopEdge/2)-5,y()+blockHeight-5,10,10);
             }
 
