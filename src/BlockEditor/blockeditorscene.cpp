@@ -140,6 +140,7 @@ void BlockEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent){
         foreach (QGraphicsItem *item, itemsHere) {
             if(item->type() == Port::Type){
                 Port *port = qgraphicsitem_cast<Port *>(item);
+                unEmphPort();
                 emphPort(port);
                 emphed = true;
                 break;
