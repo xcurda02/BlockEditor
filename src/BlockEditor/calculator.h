@@ -17,15 +17,16 @@ class BlockEditorScene;
 class QGraphicsItem;
 class QInputDialog;
 class QObject;
-
 QT_END_NAMESPACE
 
+/**
+ * @brief Trida Calculator se stara o vypocty hodnot na blocich schematu a kontrolu validity schematu
+ */
 class Calculator: public QObject
 {
  Q_OBJECT
 public:
     explicit Calculator(BlockEditorScene *scene, QObject *parent = NULL);
-    
     bool makeStep(double &result);
     bool noCycles();
     bool oneOutPortUnwired();
@@ -42,7 +43,7 @@ private:
     void unSkipAll();
     Block *getNextBlock();
     double calculate(QList<double> &values, Block::BlockType blockType);
-    BlockEditorScene *scene;
+    BlockEditorScene *scene;    ///< Objekt sceny pro ziskavani objektu na scene
 };
 
 #endif // CALCULATOR_H
