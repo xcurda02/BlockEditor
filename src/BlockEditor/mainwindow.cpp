@@ -3,6 +3,7 @@
 #include "ui_mainwindow.h"
 #include "blockeditorscene.h"
 #include <QGraphicsScene>
+#include <cmath>
 
 
 
@@ -71,7 +72,6 @@ void MainWindow::createToolBox(){
     QGridLayout *gridLayout = new QGridLayout;
 
 
-
     gridLayout->addWidget(createBlockButton(addButton),0,0);
     gridLayout->addWidget(createBlockButton(subButton),0,1);
     gridLayout->addWidget(createBlockButton(mulButton),1,0);
@@ -98,7 +98,6 @@ void MainWindow::createToolBox(){
     toolBox->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Ignored));
     toolBox->setMinimumWidth(itemWidget->sizeHint().width());
     toolBox->addItem(itemWidget, tr("Insert Blocks"));
-
 }
 
 
@@ -227,16 +226,23 @@ QToolButton *MainWindow::createToolbarButton(int buttonType){
         case moveButton:
             pixmap = QPixmap(":/images/images/move.png");
             button->setCheckable(true);
+            button->setToolTip(QString("Move"));
             break;
         case wireButton:
             pixmap = QPixmap(":/images/images/wire.png");
             button->setCheckable(true);
+            button->setToolTip(QString("Wire"));
+
             break;
         case stepButton:
             pixmap = QPixmap(":/images/images/step.png");
+            button->setToolTip(QString("Step"));
+
             break;
         case runButton:
             pixmap = QPixmap(":/images/images/run.png");
+            button->setToolTip(QString("Run"));
+
             break;
         case invAButton:
             pixmap = QPixmap(":/images/images/run.png");
@@ -450,7 +456,7 @@ void MainWindow::open()
             block->setPos(x,y);
             block->setZValue(1000.0);
 
-            double blockTopEdge = abs(block->boundingRect().topRight().x() - block->boundingRect().topLeft().x());
+            double blockTopEdge = fabs(block->boundingRect().topRight().x() - block->boundingRect().topLeft().x());
             qInfo() << "--(block)block top edge : " << blockTopEdge;
             double margin = (double) blockTopEdge / (double)(list[4].toDouble(&ok)+1);
             for(int i = 1; i < list[4].toInt()+1; i++){
@@ -459,7 +465,7 @@ void MainWindow::open()
                 scene->addItem(port);
                 block->addPort(port);
             }
-            double blockHeight = abs(block->boundingRect().topRight().y() - block->boundingRect().bottomRight().y());
+            double blockHeight = fabs(block->boundingRect().topRight().y() - block->boundingRect().bottomRight().y());
             Port *port = new Port(QPointF(x+(blockTopEdge/2),y+blockHeight-5),false,block);
             port->setZValue(1001.0);
             scene->addItem(port);
