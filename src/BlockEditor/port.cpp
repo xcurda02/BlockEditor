@@ -1,8 +1,19 @@
+////// soubor: port.cpp
+////// autori: Vojtech Curda (xcurda02), Miroslav Bulicka (xbulic02)
+////// Soubor s definicemi metod tridy Port
+
 #include <QDebug>
 #include <QBrush>
 #include "port.h"
 #include "wire.h"
 
+/**
+ * @brief Port::Port Konstruktor tridy Port
+ * @param blockPos  Souradnice bloku
+ * @param inputPort Informace, jestli je vytvareny port vstupni
+ * @param block     Blok na kterem je port umisten
+ * @param parent    Rodicovsky objekt
+ */
 Port::Port(QPointF blockPos,bool inputPort,Block *block, QGraphicsItem *parent) : QGraphicsEllipseItem(parent)
 {
     setRect(blockPos.x(),blockPos.y(),10,10);
@@ -11,9 +22,13 @@ Port::Port(QPointF blockPos,bool inputPort,Block *block, QGraphicsItem *parent) 
     setAcceptHoverEvents(true);
     wire = NULL;
     this->block = block;
-
     this->inputPort = inputPort;
 }
+
+/**
+ * @brief Port::~Port Destruktor tridy port
+ * Maze pripadny drat
+ */
 Port::~Port(){
     if (wire != NULL){
         Port *port;
@@ -68,12 +83,6 @@ void Port::unEmph(){
         emphasized = false;
     }
 }
-
-//double Port::getValue(){
-//    return this->value;
-//}
-
-
 
 void Port::hoverEnterEvent(QGraphicsSceneHoverEvent * event){
      qInfo() << "Hover Enter:";

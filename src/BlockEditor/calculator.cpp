@@ -1,3 +1,7 @@
+////// soubor: calculator.cpp
+////// autori: Vojtech Curda (xcurda02), Miroslav Bulicka (xbulic02)
+////// Soubor s definicemi metod tridy Calculator
+///
 #include "calculator.h"
 /**
  * @brief Calculator::Calculator Konstruktor tridy Calculator
