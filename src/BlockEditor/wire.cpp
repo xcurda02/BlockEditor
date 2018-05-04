@@ -70,7 +70,7 @@ Port *Wire::getInPort(){
 }
 
 /**
- * @brief Wire::getOutPort vraci vystupnii port
+ * @brief Wire::getOutPort vraci vystupni port
  * @return vystupni port
  */
 Port *Wire::getOutPort(){

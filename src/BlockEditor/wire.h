@@ -1,6 +1,6 @@
 ////// soubor: wire.h
 ////// autori: Vojtech Curda (xcurda02), Miroslav Bulicka (xbulic02)
-////// Definice tridy Block
+////// Definice tridy Wire
 #ifndef WIRE_H
 #define WIRE_H
 
