@@ -359,6 +359,7 @@ void MainWindow::about()
  * Uklada se do souboru .bsch ve tvaru "ID bloku;blockType;x,y;pocet Vstupnich Portu;IdBloku ke kteremu je pripojen 1. vstupni port;...;IdBloku ke kteremu je pripojen N. vstupni port;\n"
  */
 void MainWindow::save()
+
 {
     QString fileName = QFileDialog::getSaveFileName(this,   //dialog pro vybrani souboru do ktereho se bude ukladat
            tr("Save Block Scheme"), "",
@@ -375,7 +376,8 @@ void MainWindow::save()
         }
         //zapis do souboru
         QList<Block*> blocks = scene->getBlocks();
-        for (int i = 0; i != blocks.length(); ++i){             //projiti vsech bloku ve schematu
+
+        for (int i = 0; i!=blocks.length(); ++i){             //projiti vsech bloku ve schematu
             int blockType;
             if (blocks[i]->getBlockType() == Block::addBlock)       //zjisteni blockType
                 blockType = 0;
@@ -501,6 +503,7 @@ void MainWindow::open()
         file.seek(0);   //jdeme na zacatek souboru
         int blockIndex = 0;
         blocks=scene->getBlocks();
+        for(int k = 0; k < (blocks.size()/2); k++) blocks.swap(k,blocks.size()-(1+k)); //obrati pole kvuli spravnemu prirazeni portu
         while(!in.atEnd()){ //prochazime informace o portech
             QString line = in.readLine();;
             QRegExp rx("[,;]");
