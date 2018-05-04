@@ -1,4 +1,4 @@
-////// soubor: blockeditorscene.h
+////// soubor: blockeditorscene.cpp
 ////// autori: Vojtech Curda (xcurda02), Miroslav Bulicka (xbulic02)
 ////// Soubor se definicemi metod tridy BlockEditorScene
 
@@ -154,7 +154,6 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 addItem(port);
                 block->addPort(port);
 
-                emit blockInserted(block);
                 break;
             }
             case InsertWire:                        // Tvoreni docasne cary reprezentujici drat

@@ -41,26 +41,48 @@ Port::~Port(){
     }
 }
 
+/**
+ * @brief Port::addWire Pridani dratu
+ * @param wire Drat
+ */
 void Port::addWire(Wire *wire){
     this->wire = wire;
 }
 
+/**
+ * @brief Port::removeWire Odebrani dratu
+ */
 void Port::removeWire(){
     wire = NULL;
 }
 
+/**
+ * @brief Port::getWire Ziskani dratu
+ * @return Drat
+ */
 Wire *Port::getWire(){
     return wire;
 }
 
+/**
+ * @brief Port::isInputPort
+ * @return true - port je vstupni | false - port je vystupni
+ */
 bool Port::isInputPort(){
     return inputPort;
 }
 
+/**
+ * @brief Port::getBlock
+ * @return Blok na kterem je port
+ */
 Block *Port::getBlock(){
     return block;
 }
 
+/**
+ * @brief Port::emph Zvyrazneni portu
+ */
 void Port::emph(){
 
     if (!emphasized){
@@ -73,6 +95,10 @@ void Port::emph(){
     }
 
 }
+
+/**
+ * @brief Port::unEmph Zruseni zvyrazneni portu
+ */
 void Port::unEmph(){
     if (emphasized){
         QRectF rec = boundingRect();
@@ -84,19 +110,20 @@ void Port::unEmph(){
     }
 }
 
+/**
+ * @brief Port::hoverEnterEvent Event najeti mysi na port
+ * @param event Event
+ */
 void Port::hoverEnterEvent(QGraphicsSceneHoverEvent * event){
-     qInfo() << "Hover Enter:";
      emph();
      QGraphicsItem::hoverEnterEvent(event);
 }
-void Port::mouseMoveEvent(QGraphicsSceneMouseEvent *event){
-    qInfo() << "mouse move na port Enter:";
-    emph();
-    QGraphicsItem::mouseMoveEvent(event);
-}
 
+/**
+ * @brief Port::hoverEnterEvent Event odjeti mysi z portu
+ * @param event Event
+ */
 void Port::hoverLeaveEvent(QGraphicsSceneHoverEvent * event){
-     qInfo() << "Hover Leave:";
      unEmph();
      QGraphicsItem::hoverLeaveEvent(event);
 

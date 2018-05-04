@@ -1,4 +1,6 @@
-
+////// soubor: mainwindow.cpp
+////// autori: Vojtech Curda (xcurda02), Miroslav Bulicka (xbulic02)
+////// Soubor se definicemi metod tridy Mainwindow
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "blockeditorscene.h"
@@ -6,7 +8,11 @@
 #include <cmath>
 
 
-
+/**
+ * @brief MainWindow::MainWindow Konstruktor tridy Mainwindow
+ * Umisteni widgetu do okna
+ * @param parent    Rodicovsky objekt
+ */
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -17,8 +23,6 @@ MainWindow::MainWindow(QWidget *parent) :
     scene = new BlockEditorScene(this);
     scene->setSceneRect(QRectF(-200, -200, 400, 400));
 
-    connect(scene, SIGNAL(blockInserted(Block*)),
-                this, SLOT(blockInserted(Block*)));
     createToolBox();
     createToolbar();
 
@@ -28,33 +32,29 @@ MainWindow::MainWindow(QWidget *parent) :
     view = new QGraphicsView(scene);
     view->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     QHBoxLayout *layout = new QHBoxLayout;
-
     QVBoxLayout *vlayout = new QVBoxLayout;
 
     vlayout->addWidget(toolBar);
     vlayout->addWidget(toolBox);
 
 
-
-
     QWidget *leftPanelWidget = new QWidget;
     leftPanelWidget->setLayout(vlayout);
-
 
 
     layout->addWidget(leftPanelWidget);
     layout->addWidget(view);
 
-
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
 
     setCentralWidget(widget);
-
     calc = new Calculator(scene);
-
 }
 
+/**
+ * @brief MainWindow::~MainWindow Destruktor tridy Mainwindow
+ */
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -62,31 +62,28 @@ MainWindow::~MainWindow()
 
 
 /**
- * @brief MainWindow::createToolBox
+ * @brief MainWindow::createToolBox Vytvoreni Toolboxu - Tlacitka pro bloky a nastaveni poctu vstupu
  */
 void MainWindow::createToolBox(){
     blocksButtonGroup = new QButtonGroup(this);
-
     connect(blocksButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(blockButtonClicked(int)));
 
     QGridLayout *gridLayout = new QGridLayout;
-
-
     gridLayout->addWidget(createBlockButton(addButton),0,0);
     gridLayout->addWidget(createBlockButton(subButton),0,1);
     gridLayout->addWidget(createBlockButton(mulButton),1,0);
     gridLayout->addWidget(createBlockButton(divButton),1,1);
 
-
     inputsSpinBox = new QSpinBox;
     inputsSpinBox->setValue(2);
     connect(inputsSpinBox, SIGNAL(valueChanged(int)),scene , SLOT (setBlockInputs(int)));
+
     QLabel *label = new QLabel;
-    label->setText(QString("Vstupy:"));
+    label->setText(QString("Inputs:"));
 
     gridLayout->addWidget(label);
     gridLayout->addWidget(inputsSpinBox);
-    gridLayout->addWidget(createBlockButton(invBButton),2,0);
+    gridLayout->addWidget(createBlockButton(invBButton));
 
 
     gridLayout->setRowStretch(3, 10);
@@ -94,13 +91,16 @@ void MainWindow::createToolBox(){
 
     QWidget *itemWidget = new QWidget;
     itemWidget->setLayout(gridLayout);
+
     toolBox = new QToolBox;
     toolBox->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Ignored));
     toolBox->setMinimumWidth(itemWidget->sizeHint().width());
     toolBox->addItem(itemWidget, tr("Insert Blocks"));
 }
 
-
+/**
+ * @brief MainWindow::createToolbar Vytvoreni toolbaru - Tlacitka Move, Wire, Step, Run
+ */
 void MainWindow::createToolbar(){
 
 
@@ -111,7 +111,6 @@ void MainWindow::createToolbar(){
     QToolButton *objStepButton = createToolbarButton(stepButton);
     QToolButton *objRunButton = createToolbarButton(runButton);
 
-    qInfo() << "buttons created";
 
 
     toolbarButtonGroup = new QButtonGroup(this);
@@ -119,12 +118,8 @@ void MainWindow::createToolbar(){
     toolbarButtonGroup->addButton(objWireButton, int(wireButton));
     toolbarButtonGroup->addButton(objInvButton, int(invAButton));
     toolbarButtonGroup->addButton(objStepButton, int(stepButton));
-
     toolbarButtonGroup->addButton(objRunButton, int(runButton));
 
-    qInfo() << "added to group";
-
-    //pridano
     connect(toolbarButtonGroup, SIGNAL(buttonClicked(int)),
             this, SLOT(toolbarButtonGroupClicked(int)));
 
@@ -136,51 +131,49 @@ void MainWindow::createToolbar(){
     toolBar->addWidget(objRunButton);
 }
 
+/**
+ * @brief MainWindow::toolbarButtonGroupClicked Kliknuto tlacitko toolbaru
+ * @param button_id     Id tlacitka
+ */
 void MainWindow::toolbarButtonGroupClicked(int button_id){
-    if(button_id == stepButton){
-        if (calc->oneOutPortUnwired()){
+    if(button_id == stepButton){            // Tlacitko Step
+        if (calc->oneOutPortUnwired()){     // Kontrola, ze je jeden vystupni port nenapojen
             double result;
             bool exc = false;
             try{
                 if(!calc->makeStep(result)){
-                    qInfo() << "byl proveden posledni krok, hodnoty se vraci na default";
-                    calc->setDefaultItemValues();
+                    calc->setDefaultItemValues();       // Nastaveni hodnot na objektu na scene na vychozi
                 }
             }catch(int e){
-                if(e == CANCEL_EXCEPTION){
-                    qInfo() << "zmacknut cancel:" << result;
-                } else if(e == ZERO_DIV_EXCEPTION) {
+                if(e == CANCEL_EXCEPTION){              // Zmacknut Cancel pri zadavani hodnoty
+                    qInfo() << "Pressed Cancel:" << result;
+                } else if(e == ZERO_DIV_EXCEPTION) {    // Deleni nulou
                     calc->setDefaultItemValues();
                     showMsg("Dividing by zero");
                 }
-                 exc = true;
+                exc = true;
             }
             if(!exc){
-                qInfo() << "res:" << result;
                 showMsg("Step result: " + QString::number(result));
             }
-
-
-
          }else
-            showMsg("Presne jeden vystupni port musi byt nenapojen");
+            showMsg("Exactly one output port needs to be unwired");
 
-    } else if(button_id == runButton){
+    } else if(button_id == runButton){      // Tlacitko Run
         calc->setDefaultItemValues();
-        if(calc->noCycles() ){
-            if(calc->oneOutPortUnwired()){
+        if(calc->noCycles() ){              // Kontrola smycek
+            if(calc->oneOutPortUnwired()){  // Kontrola, ze je jeden vystupni port nenapojen
                 double result;
                 bool exc = false;
                 try{
-                    while(calc->makeStep(result)){}
+                    while(calc->makeStep(result)){}         // Provadeni kroku
                 }catch(int e){
                     if(e == CANCEL_EXCEPTION){
-                        qInfo() << "zmacknut cancel:" << result;
+                        qInfo() << "Pressed Cancel:" << result;
                     } else if(e == ZERO_DIV_EXCEPTION) {
                         showMsg("Dividing by zero");
                     }
-
-                     exc = true;
+                    exc = true;
                 }
                 calc->setDefaultItemValues();
                 if (!exc){
@@ -188,48 +181,46 @@ void MainWindow::toolbarButtonGroupClicked(int button_id){
                 }
 
             }else{
-                showMsg("Presne jeden vystupni port musi byt nenapojen");
+                showMsg("Exactly one output port needs to be unwired");
             }
 
         } else {
-            showMsg("Zjistena smycka ve schematu");
+            showMsg("A cycle in schema detected");
         }
-    } else if(button_id == invAButton){
-        qInfo() << "inv button clicked";
-
     }else{
-        //pro tlacitka Move(ID=6) a Wire(ID=7) v mnozine mode MoveBlock(1) InsertWire(2) proto -5 k ID
+        /* Pro tlacitka Move(ID=6) a Wire(ID=7) v mnozine mode MoveBlock(1) InsertWire(2) proto -5 k ID */
         scene->setMode(BlockEditorScene::Mode(toolbarButtonGroup->checkedId()-5));
         blocksButtonGroup->button(int(invBButton))->setChecked(true);
-
     }
-
 }
 
+/**
+ * @brief MainWindow::showMsg Vypsani zpravy v dialogovem okne
+ * @param msg   Retezec zpravy
+ */
 void MainWindow::showMsg(QString msg){
     QMessageBox msgBox;
     msgBox.setText(msg);
     msgBox.exec();
 }
 
-
+/**
+ * @brief MainWindow::blockButtonClicked Zmacknuto tlacitko bloku
+ * Nastaveni modu sceny a typu bloku
+ * @param button_id     Id tlacitka
+ */
 void MainWindow::blockButtonClicked(int button_id){
-
-    qInfo() << "button clicked: id" << button_id;
     scene->setMode(BlockEditorScene::InsertBlock);
     scene->setBlockType(Block::BlockType(button_id));
-
     toolbarButtonGroup->button(int(invAButton))->setChecked(true);
 }
 
-void MainWindow::blockInserted(Block *block){
-    qInfo() << "scene items: " << scene->items().count();
-    blocksButtonGroup->button(int(block->getBlockType()))->setChecked(false);
-}
-
-
-
-QToolButton *MainWindow::createToolbarButton(int buttonType){
+/**
+ * @brief MainWindow::createToolbarButton Vytvoreni tlacitka toolbaru
+ * @param buttonType    Typ tlacitka (viz. @ref Button::ButtonType)
+ * @return Tlacitko
+ */
+QToolButton *MainWindow::createToolbarButton(ButtonType buttonType){
     QToolButton *button = new QToolButton;
     QPixmap pixmap;
     switch(buttonType){
@@ -242,17 +233,14 @@ QToolButton *MainWindow::createToolbarButton(int buttonType){
             pixmap = QPixmap(":/images/images/wire.png");
             button->setCheckable(true);
             button->setToolTip(QString("Wire"));
-
             break;
         case stepButton:
             pixmap = QPixmap(":/images/images/step.png");
             button->setToolTip(QString("Step"));
-
             break;
         case runButton:
             pixmap = QPixmap(":/images/images/run.png");
             button->setToolTip(QString("Run"));
-
             break;
         case invAButton:
             pixmap = QPixmap(":/images/images/run.png");
@@ -269,8 +257,12 @@ QToolButton *MainWindow::createToolbarButton(int buttonType){
     return button;
 }
 
-
-QAbstractButton *MainWindow::createBlockButton(int buttonType){
+/**
+ * @brief MainWindow::createBlockButton Vytvoreni tlacitka bloku
+ * @param buttonType     Typ tlacitka (viz. @ref Button::ButtonType)
+ * @return Tlacitko
+ */
+QAbstractButton *MainWindow::createBlockButton(ButtonType buttonType){
     QToolButton *button = new QToolButton;
     QPixmap pixmap;
     switch(buttonType){
@@ -490,7 +482,6 @@ void MainWindow::open()
             block->setZValue(1000.0);
 
             double blockTopEdge = fabs(block->boundingRect().topRight().x() - block->boundingRect().topLeft().x());
-            qInfo() << "--(block)block top edge : " << blockTopEdge;
             double margin = (double) blockTopEdge / (double)(list[4].toDouble(&ok)+1);
             for(int i = 1; i < list[4].toInt()+1; i++){
                 Port *port = new Port(QPointF(x+(i*margin),y-5),true,block);
@@ -504,7 +495,6 @@ void MainWindow::open()
             scene->addItem(port);
             block->addPort(port);
 
-            emit blockInserted(block);
         }
 
         file.seek(0);

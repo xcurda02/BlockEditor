@@ -1,4 +1,7 @@
- #ifndef MAINWINDOW_H
+////// soubor: mainwindow.h
+////// autori: Vojtech Curda (xcurda02), Miroslav Bulicka (xbulic02)
+////// Definice Tridy MainWindow
+#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QGraphicsPixmapItem>
@@ -28,6 +31,10 @@ namespace Ui {
 class MainWindow;
 }
 
+/**
+ * @brief The MainWindow class Trida MainWindow se stara o veskerou praci v okne mimo grafickou scenu
+ * Vytvari widgety a stara se o ukladani schematu
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -38,7 +45,6 @@ public:
 
 private slots:
 
-    void blockInserted(Block *block);
     void blockButtonClicked(int button_id);
     void toolbarButtonGroupClicked(int button_id);
 
@@ -48,44 +54,39 @@ private slots:
     void save();
 
 private:
-    enum {addButton, subButton, mulButton, divButton, stepButton, runButton, moveButton, wireButton, invAButton, invBButton};
 
-    Ui::MainWindow *ui;
-
-    QButtonGroup *blocksButtonGroup;
-    QButtonGroup *toolbarButtonGroup;
-
+    enum ButtonType {addButton, subButton, mulButton, divButton, stepButton, runButton, moveButton, wireButton, invAButton, invBButton};
 
     void showMsg(QString msg);
-
-    QToolBox *toolBox;
-    QToolBar *toolBar;
-    QSpinBox *inputsSpinBox;
-
-
-    Calculator *calc;
-
-    QMenu *fileMenu;
-    QMenu *aboutMenu;
-
-
-    BlockEditorScene *scene;
-
-    QGraphicsView *view;
-
     void createToolBox();
     void createToolbar();
-    QAbstractButton *createBlockButton(int buttonType);
-    QToolButton *createToolbarButton(int buttonType);
-
+    QAbstractButton *createBlockButton(ButtonType buttonType);
+    QToolButton *createToolbarButton(ButtonType buttonType);
     void createMenus();
     void createActions();
 
-    QAction *aboutAction;
-    QAction *saveAction;
-    QAction *openAction;
+    Ui::MainWindow *ui;                 ///> Rozhrani
 
+    QButtonGroup *blocksButtonGroup;    ///> Tlacitka bloku
+    QButtonGroup *toolbarButtonGroup;   ///> Tlacitka toolbaru (Move, Wire, Step, Run)
 
+    QToolBox *toolBox;                  ///> ToolBox - misto, kde jsou umisteny tlacitka bloku a nastaveni poctu vstupu
+    QToolBar *toolBar;                  ///> ToolBar - oddeleni s tlacitky Move, Wire, Step, Run
+
+    QSpinBox *inputsSpinBox;            ///> SpinBox pro nastaveni poctu vstupu
+
+    Calculator *calc;                   ///> Objekt pro vypocitavani schematu
+
+    QMenu *fileMenu;                    ///> Menu File
+    QMenu *aboutMenu;                   ///> Menu About
+
+    BlockEditorScene *scene;            ///> Graficka scena
+
+    QGraphicsView *view;                ///> View
+
+    QAction *aboutAction;               ///> Akce v menu - About
+    QAction *saveAction;                ///> Akce v menu - Save
+    QAction *openAction;                ///> Akce v menu - Open
 protected:
     void closeEvent(QCloseEvent *event);
 

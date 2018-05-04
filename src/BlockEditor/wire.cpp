@@ -14,8 +14,7 @@ Wire::Wire(Port *startItem,  Port *endItem, QGraphicsItem *parent)
        this->startItem = startItem;
        this->endItem = endItem;
        setFlag(QGraphicsItem::ItemIsSelectable, true);
-       setPen(QPen(Qt::black, 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-       qInfo() << "wire created";
+       setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 
        valueSet = false;
 }
@@ -71,7 +70,7 @@ void Wire::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 {
     QPen myPen = pen();
     painter->setBrush(Qt::black);
-    painter->setPen(QPen(Qt::black, 4));
+    painter->setPen(QPen(Qt::black, 2));
     QLineF line(QPointF(startItem->boundingRect().topLeft().x()+5.0,startItem->boundingRect().topLeft().y()+5.0), QPointF(endItem->boundingRect().topLeft().x()+5.0,endItem->boundingRect().topLeft().y()+5.0));
     painter->drawLine(line);
 }
