@@ -76,6 +76,8 @@ void MainWindow::createToolBox(){
 
     inputsSpinBox = new QSpinBox;
     inputsSpinBox->setValue(2);
+    inputsSpinBox->setMaximum(8);
+    inputsSpinBox->setMinimum(2);
     connect(inputsSpinBox, SIGNAL(valueChanged(int)),scene , SLOT (setBlockInputs(int)));
 
     QLabel *label = new QLabel;
