@@ -295,10 +295,11 @@ QAbstractButton *MainWindow::createBlockButton(ButtonType buttonType){
 
 }
 
-//! úprava close event
-/*!
-    \brief Před ukončením programu proběhne dotaz na uložení, pokud byly provedeny změny ve schématu.
-*/
+
+/**
+ * @briefMainWindow::closeEvent upravuje close event. Pred ukoncenim se pta na ulozeni souboru
+ * @param event close event
+ */
 void MainWindow::closeEvent(QCloseEvent *event){
     if(scene->getSceneChanged()){
         event->ignore();
@@ -310,54 +311,54 @@ void MainWindow::closeEvent(QCloseEvent *event){
 }
 
 
-//! Vytvoření akci pro vrchní menu
-/*!
-*/
+/**
+ * @brief MainWindow::createActions vytvoreni akci pro vrchni menu
+ */
 void MainWindow::createActions()
 {
-    aboutAction = new QAction(tr("A&bout"), this);
+    aboutAction = new QAction(tr("A&bout"), this); //akce zavolani About
     aboutAction->setShortcut(tr("Ctrl+B"));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
-    saveAction = new QAction(tr("&Open"), this);
+    saveAction = new QAction(tr("&Open"), this); //akce zavolani otevreni souboru
     saveAction->setShortcut(tr("Ctrl+O"));
     connect(saveAction, SIGNAL(triggered()), this, SLOT(open()));
 
-    openAction = new QAction(tr("&Save"), this);
+    openAction = new QAction(tr("&Save"), this); //akce ulozeni souboru
     openAction->setShortcut(tr("Ctrl+S"));
     connect(openAction, SIGNAL(triggered()), this, SLOT(save()));
 }
 
-//!Vytvoření vrchního menu
-/*!
-*/
+/**
+ * @brief MainWindow::createMenus vytvoreni vrchniho menu
+ */
 void MainWindow::createMenus()
 {
-    fileMenu = menuBar()->addMenu(tr("&File"));
-    fileMenu->addAction(saveAction);
+    fileMenu = menuBar()->addMenu(tr("&File")); //vytvoreni zalozky File v menu
+    fileMenu->addAction(saveAction);            //pridani akci do teto zalozky
     fileMenu->addAction(openAction);
 
 
-    aboutMenu = menuBar()->addMenu(tr("&Help"));
-    aboutMenu->addAction(aboutAction);
+    aboutMenu = menuBar()->addMenu(tr("&Help"));    //vytvoreni zalozky help
+    aboutMenu->addAction(aboutAction);              //pridani akce about do teto zalozky
 }
 
-//! MessageBox About
-/*!
-*/
+/**
+ * @brief MainWindow::about zobrazeni QMessageBox::about
+ */
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About Block Editor"),
                        tr("This is Block Editor."));
 }
 
-//! MessageBox Save
-/*!
- \brief akce uložení schématu.
-*/
+/**
+ * @brief MainWindow::save dialog pro ulozeni
+ * Uklada se do souboru .bsch ve tvaru "ID bloku;blockType;x,y;pocet Vstupnich Portu;IdBloku ke kteremu je pripojen 1. vstupni port;...;IdBloku ke kteremu je pripojen N. vstupni port;\n"
+ */
 void MainWindow::save()
 {
-    QString fileName = QFileDialog::getSaveFileName(this,
+    QString fileName = QFileDialog::getSaveFileName(this,   //dialog pro vybrani souboru do ktereho se bude ukladat
            tr("Save Block Scheme"), "",
            tr("Block Scheme (*.bsch)"));
 
@@ -365,16 +366,16 @@ void MainWindow::save()
         return;
     } else {
         QFile file(fileName);
-        if (!file.open(QIODevice::WriteOnly)) {
+        if (!file.open(QIODevice::WriteOnly)) { //otevreni pro zapis
             QMessageBox::information(this, tr("Unable to open file"),
             file.errorString());
             return;
         }
         //zapis do souboru
         QList<Block*> blocks = scene->getBlocks();
-        for (int i = 0; i != blocks.length(); ++i){
+        for (int i = 0; i != blocks.length(); ++i){             //projiti vsech bloku ve schematu
             int blockType;
-            if (blocks[i]->getBlockType() == Block::addBlock)
+            if (blocks[i]->getBlockType() == Block::addBlock)       //zjisteni blockType
                 blockType = 0;
             else if (blocks[i]->getBlockType() == Block::subBlock)
                 blockType = 1;
@@ -383,48 +384,49 @@ void MainWindow::save()
             else if (blocks[i]->getBlockType() == Block::divBlock)
                 blockType = 3;
             QString text;
-            QTextStream outputStream(&file);
-            outputStream << i;
+            QTextStream outputStream(&file);      //outputStream pro zapis do souboru
+            outputStream << i;  //zapis ID bloku
             outputStream << ";";
-            outputStream << blockType;
+            outputStream << blockType;  //zapis blockType
             outputStream << ";";
-            outputStream << blocks[i]->x();
+            outputStream << blocks[i]->x(); //zapis souradnice x
             outputStream << ",";
-            outputStream << blocks[i]->y();
+            outputStream << blocks[i]->y(); //zapis souradnice y
             outputStream << ";";
-            outputStream << blocks[i]->ports.count()-1;
+            outputStream << blocks[i]->ports.count()-1; //zapis poctu vstupnich portu
             outputStream << ";";
-            for(int j=0; j != blocks[i]->ports.length()-1; ++j){
-                if (blocks[i]->ports[j]->getWire()!= NULL){
+            for(int j=0; j != blocks[i]->ports.length()-1; ++j){    //projiti vsech vstupnich portu
+                if (blocks[i]->ports[j]->getWire()!= NULL){ //k portu je pripojen wire
                     outputStream << "w";
                     int blockNum;
-                    for(int k=0; k!=blocks.length();++k){
+                    for(int k=0; k!=blocks.length();++k){ //projde vystupni porty vsech bloku a porovnava je s endItem a startItem wire aktualne spracovavaneho portu. Pokud se rovnaji nasli jsme ID bloku se kterym je dany port propojen
                         if(blocks[k]->getOutPort()==blocks[i]->ports[j]->getWire()->getEndItem() || blocks[k]->getOutPort()==blocks[i]->ports[j]->getWire()->getStartItem()){
                             blockNum=k;
                         }
                     }
-                    outputStream << blockNum;
+                    outputStream << blockNum; //zapis Id bloku se kterym je dany port propojen
                     outputStream << ";";
-                } else {
+                } else {                    //pripad, kdy port nema zadny propoj
                     outputStream << "NULL";
                     outputStream << ";";
                 }
 
             }
-            outputStream << "\n";
+            outputStream << "\n";   //konec zapisu aktualniho bloku
         }
-        scene->setSceneChanged(false);
+        scene->setSceneChanged(false); //po vykresleni otevreneho schematu se nastavi priznak zmeny ve schematu na false
+        file.close(); //zavreni souboru
     }
 }
 
 
-//! MessageBox Open
-/*!
- \brief akce otevření schématu.
-*/
+/**
+ * @brief MainWindow::open dialog pro otevreni
+ * Pred otevrenim se pta na ulozeni stavajiciho schematu, pote otevre vybrany soubor a nacte schema
+ */
 void MainWindow::open()
 {
-    if(scene->getSceneChanged()){
+    if(scene->getSceneChanged()){   //pokud byla scena zmenena, zeptame se jestli chce uzivatel ulozit stavajici schema pred otevrenim noveho
         if (QMessageBox::Yes == QMessageBox::question(this, "Save", "Do you want to save changes?", QMessageBox::Yes | QMessageBox::No)){
             this->save();
         }
@@ -438,28 +440,25 @@ void MainWindow::open()
         return;
     } else {
         QFile file(fileName);
-        if (!file.open(QIODevice::ReadOnly)) {
+        if (!file.open(QIODevice::ReadOnly)) { //otevreni pro cteni
             QMessageBox::information(this, tr("Unable to open file"),
                 file.errorString());
             return;
         }
         QList<Block*> blocks=scene->getBlocks();
-        for(int i = 0;i<blocks.length();++i){
+        for(int i = 0;i<blocks.length();++i){   //vymazani vsech bloku ve schematu
             delete blocks[i];
         }
         blocks.clear();
-        //destruktor na bloky?
-        QTextStream in(&file);
-        //cteni souboru po radcich (co radek to jeden blok)
-        while (!in.atEnd()){
-            QString line = in.readLine();;
-            //parsovani stringu
-            QRegExp rx("[,;]");
-            QStringList list = line.split(rx, QString::SkipEmptyParts);
 
-            //pridani blocku
+        QTextStream in(&file);
+        while (!in.atEnd()){         //cteni souboru po radcich
+            QString line = in.readLine();;
+            QRegExp rx("[,;]");   //regularni vyraz pro parsovani (narazi na ; nebo , parsuje)
+            QStringList list = line.split(rx, QString::SkipEmptyParts);  //pole stringu po parsovani
+
            Block::BlockType blockType;
-            switch(list[1].toInt()){
+            switch(list[1].toInt()){    //nastaveni blocktype pred vlozenim bloku
             case 0:
                 blockType =  Block::addBlock;
                 break;
@@ -474,45 +473,44 @@ void MainWindow::open()
                 break;
 
             }
-            Block *block = new Block(blockType);
+            Block *block = new Block(blockType);    //vytvoreni bloku
             scene->addItem(block);
             bool ok;
-            qreal x = list[2].toDouble(&ok); qreal y = list[3].toDouble(&ok);
+            qreal x = list[2].toDouble(&ok); qreal y = list[3].toDouble(&ok);   //ziskani souradnic
             block->setPos(x,y);
             block->setZValue(1000.0);
 
             double blockTopEdge = fabs(block->boundingRect().topRight().x() - block->boundingRect().topLeft().x());
             double margin = (double) blockTopEdge / (double)(list[4].toDouble(&ok)+1);
-            for(int i = 1; i < list[4].toInt()+1; i++){
+            for(int i = 1; i < list[4].toInt()+1; i++){     //vykresleni vstupnich portu
                 Port *port = new Port(QPointF(x+(i*margin),y-5),true,block);
                 port->setZValue(1001.0);
                 scene->addItem(port);
                 block->addPort(port);
             }
             double blockHeight = fabs(block->boundingRect().topRight().y() - block->boundingRect().bottomRight().y());
-            Port *port = new Port(QPointF(x+(blockTopEdge/2),y+blockHeight-5),false,block);
+            Port *port = new Port(QPointF(x+(blockTopEdge/2),y+blockHeight-5),false,block); //vykresleni vystupniho portu
             port->setZValue(1001.0);
             scene->addItem(port);
             block->addPort(port);
 
         }
 
-        file.seek(0);
+        file.seek(0);   //jdeme na zacatek souboru
         int blockIndex = 0;
-        //pridani wires pripadne nastaveni hodnoty portu
         blocks=scene->getBlocks();
-        while(!in.atEnd()){
+        while(!in.atEnd()){ //prochazime informace o portech
             QString line = in.readLine();;
             QRegExp rx("[,;]");
             QStringList list = line.split(rx, QString::SkipEmptyParts);
             int num = 5+list[4].toInt();
             for (int i = 5; i != num; ++i){
-                if(list[i][0]=='w'){
+                if(list[i][0]=='w'){    //pokud ma vstupni port propoj, vykreslime ho
                     QString str = list[i];
-                    str.remove(0,1);
-                    Port *startItem = (blocks[blockIndex]->ports[i-5]);
-                    Port *endItem   = (blocks[str.toInt()]->getOutPort());
-                    Wire *wire = new Wire(startItem, endItem);
+                    str.remove(0,1);    //odstraneni "w" na zacatku stringu
+                    Port *startItem = (blocks[blockIndex]->ports[i-5]); //startItem port
+                    Port *endItem   = (blocks[str.toInt()]->getOutPort()); //enditem
+                    Wire *wire = new Wire(startItem, endItem);  //vytvoreni portu
                     startItem->addWire(wire);
                     endItem->addWire(wire);
                     wire->setZValue(1000.0);
@@ -522,7 +520,7 @@ void MainWindow::open()
             }
             blockIndex++;
         }
-        scene->setSceneChanged(false);
-        file.close();
+        scene->setSceneChanged(false);  //priznak zmeny na false po otevreni
+        file.close(); //zavreni souboru
     }
 }

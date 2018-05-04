@@ -12,7 +12,7 @@ class Wire;
 class Block;
 
 /**
- * @brief The Port class Trrida port reprezentuje port, dedi od Qt tridy QGraphicsEllipseItem
+ * @brief The Port class Trida port reprezentuje port, dedi od Qt tridy QGraphicsEllipseItem
  */
 class Port : public QGraphicsEllipseItem
 {

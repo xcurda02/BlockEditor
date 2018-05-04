@@ -1,3 +1,6 @@
+////// soubor: wire.h
+////// autori: Vojtech Curda (xcurda02), Miroslav Bulicka (xbulic02)
+////// Definice tridy Block
 #ifndef WIRE_H
 #define WIRE_H
 
@@ -18,7 +21,9 @@ class QPainterPath;
 QT_END_NAMESPACE
 
 
-
+/**
+ * @brief The Port class Trida wire reprezentuje propoj, dedi od Qt tridy QGraphicsLineItem
+ */
 class Wire : public QGraphicsLineItem
 {
 public:
@@ -27,7 +32,6 @@ public:
     enum { Type = UserType +4};
     int type() const Q_DECL_OVERRIDE { return Type; }
     QRectF boundingRect() const Q_DECL_OVERRIDE;
-    void setColor(const QColor &color) { myColor = color; }
     Port *getStartItem() const { return startItem; }
     Port *getEndItem() const { return endItem; }
     Port *getInPort();
@@ -44,12 +48,10 @@ protected:
 
 private:
     QPointF getMiddlePoint(QGraphicsItem *item);
-    Port *startItem;
-    Port *endItem;
-    QColor myColor;
-
-    bool valueSet;
-    double value;
+    Port *startItem;    ///> port kde propoj zacina
+    Port *endItem;      ///> port kde propoj konci
+    bool valueSet;      ///> priznak nastaveni hodnoty na propoji
+    double value;       ///> hodnota na propoji
 
 };
 
