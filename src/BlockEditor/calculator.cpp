@@ -6,7 +6,7 @@
 /**
  * @brief Calculator::Calculator Konstruktor tridy Calculator
  * @param scene Graficka scena
- * @param paren Rodicovsky objekt
+ * @param parent Rodicovsky objekt
  */
 Calculator::Calculator(BlockEditorScene *scene,QObject *parent): QObject(parent)
 {

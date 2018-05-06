@@ -240,7 +240,7 @@ void MainWindow::blockButtonClicked(int button_id){
 
 /**
  * @brief MainWindow::createToolbarButton Vytvoreni tlacitka toolbaru
- * @param buttonType    Typ tlacitka (viz. @ref Button::ButtonType)
+ * @param buttonType    Typ tlacitka (viz. ButtonType)
  * @return Tlacitko
  */
 QToolButton *MainWindow::createToolbarButton(ButtonType buttonType){
@@ -282,7 +282,7 @@ QToolButton *MainWindow::createToolbarButton(ButtonType buttonType){
 
 /**
  * @brief MainWindow::createBlockButton Vytvoreni tlacitka bloku
- * @param buttonType     Typ tlacitka (viz. @ref Button::ButtonType)
+ * @param buttonType     Typ tlacitka (viz. ButtonType)
  * @return Tlacitko
  */
 QAbstractButton *MainWindow::createBlockButton(ButtonType buttonType){
@@ -319,7 +319,7 @@ QAbstractButton *MainWindow::createBlockButton(ButtonType buttonType){
 }
 
 /**
- * @briefMainWindow::closeEvent upravuje close event. Pred ukoncenim se pta na ulozeni souboru
+ * @brief MainWindow::closeEvent upravuje close event. Pred ukoncenim se pta na ulozeni souboru
  * @param event close event
  */
 void MainWindow::closeEvent(QCloseEvent *event){
