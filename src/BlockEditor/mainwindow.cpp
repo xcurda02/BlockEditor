@@ -534,7 +534,8 @@ void MainWindow::open()
                     str.remove(0,1);    //odstraneni "w" na zacatku stringu
                     Port *startItem = (blocks[blockIndex]->ports[i-5]); //startItem port
                     Port *endItem   = (blocks[str.toInt()]->getOutPort()); //enditem
-                    Wire *wire = new Wire(startItem, endItem);  //vytvoreni portu
+                    Wire *wire = new Wire(startItem, endItem);  //vytvoreni dratu
+                    connect(wire, SIGNAL(setStatusBarText(QString)), this, SLOT(statusBarText(QString)));
                     startItem->addWire(wire);
                     endItem->addWire(wire);
                     wire->setZValue(1000.0);

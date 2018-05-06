@@ -159,7 +159,6 @@ void Wire::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
  */
 void Wire::hoverEnterEvent(QGraphicsSceneHoverEvent * event){
     QString str;
-
     if (isValueSet()){
         str = QString::number(getValue());
     }else{
@@ -167,10 +166,8 @@ void Wire::hoverEnterEvent(QGraphicsSceneHoverEvent * event){
     }
     str = QString("Value on wire: ") + str;
     emit setStatusBarText(str);
-
     hovered = true;
     update();
-
     QGraphicsItem::hoverEnterEvent(event);
 }
 
