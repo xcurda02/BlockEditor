@@ -8,6 +8,7 @@
 #include <QGraphicsScene>
 #include <QKeyEvent>
 #include <QtCore>
+#include <QObject>
 #include "block.h"
 #include "port.h"
 
@@ -38,9 +39,11 @@ public slots:
     void setMode(Mode mode);
     void setBlockType(Block::BlockType blockType);
     void setBlockInputs(int inputs);
+    void setStatusBarText(QString str);
 
 signals:
     void blockInserted(Block *block);
+    void statusBarText(QString str);
 
 private:
     Mode mode;                      ///< Aktualni mod sceny

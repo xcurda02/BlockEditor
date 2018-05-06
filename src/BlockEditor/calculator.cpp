@@ -135,7 +135,7 @@ bool Calculator::makeStep(double &result){
 
     Wire *outWire = block->getOutPort()->getWire();     // Vystupni drat bloku
     block->setProcessed();
-
+    block->emph();
     if(outWire != NULL){            //Blok je napojen vystupem na dalsi
         outWire->setValue(result);
         return true;
@@ -212,7 +212,6 @@ bool Calculator::noCycles(){
         }
         setBlocksNotProcessed();                            // Nastaveni vsech bloku jako nezpracovane
     }
-
     return true;
 }
 

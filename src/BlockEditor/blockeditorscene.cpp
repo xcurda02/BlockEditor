@@ -21,7 +21,7 @@ BlockEditorScene::BlockEditorScene(QObject *parent) : QGraphicsScene(parent)
     blockType = Block::addBlock;
     sceneChanged = false;
     emphasizedPort = NULL;
-
+    wire = NULL;
 }
 
 /**
@@ -101,7 +101,6 @@ Port *BlockEditorScene::emphPort(Port *port){
     if(port == NULL)
         return emphasizedPort;
     unEmphPort();
-
     port->emph();
     emphasizedPort = port;
     return NULL;
@@ -116,6 +115,12 @@ void BlockEditorScene::unEmphPort(){
         emphasizedPort = NULL;
     }
 
+}
+
+
+void BlockEditorScene::setStatusBarText(QString str)
+{
+    emit statusBarText(str);
 }
 
 /**
@@ -134,7 +139,7 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
 
                 addItem(block);                     // Pridani bloku na scenu
                 block->setPos(mouseEvent->scenePos());
-                block->setZValue(1000.0);
+                block->setZValue(500.0 + getBlocks().count());
 
                 /* Vypocet hodnot pro umisteni portu */
                 double blockTopEdge = fabs(block->boundingRect().topRight().x() - block->boundingRect().topLeft().x());
@@ -143,7 +148,6 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 /* Pridavani vstupnich portu */
                 for(int i = 1; i < blockInputs+1; i++){
                     Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(i*margin)-5,mouseEvent->scenePos().y()-5),true, block);
-                    port->setZValue(1001.0);
                     addItem(port);
                     block->addPort(port);
                 }
@@ -153,18 +157,22 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 Port *port = new Port(QPointF(mouseEvent->scenePos().x()+(blockTopEdge/2)-5,mouseEvent->scenePos().y()+blockHeight-5),false, block);
                 addItem(port);
                 block->addPort(port);
-
+                QGraphicsScene::mousePressEvent(mouseEvent);
                 break;
             }
             case InsertWire:                        // Tvoreni docasne cary reprezentujici drat
                 wire = new QGraphicsLineItem(QLineF(mouseEvent->scenePos(), mouseEvent->scenePos()));
-                wire->setPen(QPen(Qt::black));
-                wire->setZValue(1001.0);
+                wire->setPen(QPen(Qt::black,3));
+                wire->setZValue(1000.0);
                 addItem(wire);
+                break;
+            case MoveBlock:
+                QGraphicsScene::mousePressEvent(mouseEvent);
                 break;
 
         }
-        QGraphicsScene::mousePressEvent(mouseEvent);
+
+
     }
 
 }
@@ -243,6 +251,7 @@ void BlockEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent){
               (startItem->isInputPort() == false && endItem->isInputPort() == true))){  // konec podminky
 
                 Wire *wire = new Wire(startItem, endItem);
+                connect(wire, SIGNAL(setStatusBarText(QString)), this, SLOT(setStatusBarText(QString)));
                 this->setSceneChanged(true);
 
                 /* Nastaveni dratu do portu */

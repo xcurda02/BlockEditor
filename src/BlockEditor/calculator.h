@@ -35,7 +35,6 @@ public:
     bool noCycles();
     bool oneOutPortUnwired();
     void setDefaultItemValues();
-signals:
 
 public slots:
 

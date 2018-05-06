@@ -17,17 +17,18 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    this->setAttribute(Qt::WA_AlwaysShowToolTips,true);
 
     createActions();
     createMenus();
     scene = new BlockEditorScene(this);
     scene->setSceneRect(QRectF(-200, -200, 400, 400));
 
+    connect(scene, SIGNAL(statusBarText(QString)), this, SLOT(statusBarText(QString)));
     createToolBox();
     createToolbar();
 
     scene->setBlockInputs(inputsSpinBox->value());
-
 
     view = new QGraphicsView(scene);
     view->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
@@ -47,9 +48,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
+    statusBarText(QString("Ready"));
 
     setCentralWidget(widget);
     calc = new Calculator(scene);
+
 }
 
 /**
@@ -60,6 +63,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::statusBarText(QString str)
+{
+    statusBar()->showMessage(str);
+}
 
 /**
  * @brief MainWindow::createToolBox Vytvoreni Toolboxu - Tlacitka pro bloky a nastaveni poctu vstupu
@@ -157,6 +164,9 @@ void MainWindow::toolbarButtonGroupClicked(int button_id){
             }
             if(!exc){
                 showMsg("Step result: " + QString::number(result));
+                foreach (Block *block, scene->getBlocks()) {
+                    block->unEmph();
+                }
             }
          }else
             showMsg("Exactly one output port needs to be unwired");

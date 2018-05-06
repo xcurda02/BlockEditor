@@ -43,10 +43,13 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+
 private slots:
 
     void blockButtonClicked(int button_id);
     void toolbarButtonGroupClicked(int button_id);
+    void statusBarText(QString str);
+
 
 
     void about();
@@ -58,6 +61,7 @@ private:
     enum ButtonType {addButton, subButton, mulButton, divButton, stepButton, runButton, moveButton, wireButton, invAButton, invBButton};
 
     void showMsg(QString msg);
+    void createStatusBar();
     void createToolBox();
     void createToolbar();
     QAbstractButton *createBlockButton(ButtonType buttonType);
@@ -69,6 +73,8 @@ private:
 
     QButtonGroup *blocksButtonGroup;    ///> Tlacitka bloku
     QButtonGroup *toolbarButtonGroup;   ///> Tlacitka toolbaru (Move, Wire, Step, Run)
+
+    QStatusBar *stat;
 
     QToolBox *toolBox;                  ///> ToolBox - misto, kde jsou umisteny tlacitka bloku a nastaveni poctu vstupu
     QToolBar *toolBar;                  ///> ToolBar - oddeleni s tlacitky Move, Wire, Step, Run

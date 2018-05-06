@@ -4,6 +4,7 @@
 
 #include <QDebug>
 #include <QBrush>
+#include <mainwindow.h>
 #include "port.h"
 #include "wire.h"
 
@@ -23,6 +24,8 @@ Port::Port(QPointF blockPos,bool inputPort,Block *block, QGraphicsItem *parent) 
     wire = NULL;
     this->block = block;
     this->inputPort = inputPort;
+    emphasized = false;
+    setZValue(block->zValue()+0.1);
 }
 
 /**

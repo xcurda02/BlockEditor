@@ -24,8 +24,11 @@ QT_END_NAMESPACE
 /**
  * @brief The Port class Trida wire reprezentuje propoj, dedi od Qt tridy QGraphicsLineItem
  */
-class Wire : public QGraphicsLineItem
+class Wire : public QObject, public QGraphicsLineItem
 {
+    Q_OBJECT
+signals:
+    void setStatusBarText(QString str);
 public:
     Wire(Port *startItem,  Port *endItem, QGraphicsItem *parent = 0);
 
@@ -45,13 +48,18 @@ public:
 
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) Q_DECL_OVERRIDE;
+    void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
+
 
 private:
     QPointF getMiddlePoint(QGraphicsItem *item);
+    double getLowerPortZValue();
     Port *startItem;    ///> port kde propoj zacina
     Port *endItem;      ///> port kde propoj konci
     bool valueSet;      ///> priznak nastaveni hodnoty na propoji
     double value;       ///> hodnota na propoji
+    bool hovered;       ///> na dratu je najety kurzor mysi
 
 };
 

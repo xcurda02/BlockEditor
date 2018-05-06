@@ -6,6 +6,8 @@
 #define PORT_H
 
 #include <QGraphicsEllipseItem>
+#include <QToolTip>
+#include <QObject>
 #include "block.h"
 
 class Wire;
@@ -16,6 +18,7 @@ class Block;
  */
 class Port : public QGraphicsEllipseItem
 {
+
 
 public:
     Port(QPointF blockPos,bool inputPort, Block *block, QGraphicsItem *parent=0);
@@ -41,6 +44,7 @@ private:
     bool inputPort;         ///> Informace, jestli je port vstupni
     Wire *wire;             ///> Drat
     bool emphasized;        ///> Informace, jestli je port zvyraznen
+    QToolTip *tooltip;
 
 
 };

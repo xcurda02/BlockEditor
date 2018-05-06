@@ -20,10 +20,12 @@ Wire::Wire(Port *startItem,  Port *endItem, QGraphicsItem *parent)
 {
        this->startItem = startItem;
        this->endItem = endItem;
-       setFlag(QGraphicsItem::ItemIsSelectable, true);
-       setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-
        valueSet = false;
+       setAcceptHoverEvents(true);
+       hovered = false;
+       setZValue(getLowerPortZValue()-0.1);
+
+
 }
 
 /**
@@ -32,6 +34,14 @@ Wire::Wire(Port *startItem,  Port *endItem, QGraphicsItem *parent)
 */
 bool Wire::isValueSet(){
     return valueSet;
+}
+
+/**
+ * @brief Wire::getLowerPort Vrati vysku nizsiho portu
+ * @return
+ */
+double Wire::getLowerPortZValue(){
+    return startItem->zValue() < endItem->zValue() ? startItem->zValue() : endItem->zValue();
 }
 
 /**
@@ -94,26 +104,64 @@ QRectF Wire::boundingRect() const
         .adjusted(-extra, -extra, extra, extra);
 }
 
-/**
- * @brief Wire::updatePosition pri pohybu bloku prekresli propojeni
- */
+QPointF Wire::getMiddlePoint(QGraphicsItem *item){
+    double width = fabs(item->boundingRect().topLeft().x() - item->boundingRect().topRight().x());
+    double height = fabs(item->boundingRect().topRight().y() - item->boundingRect().bottomRight().y());
+    return QPointF(width/2,height/2);
+}
+
 void Wire::updatePosition()
 {
-    QLineF line(QPointF(startItem->boundingRect().topLeft().x(),startItem->boundingRect().topLeft().y()), QPointF(endItem->boundingRect().topLeft().x(),endItem->boundingRect().topLeft().y()));
+    QPointF startMiddlePoint = getMiddlePoint(startItem);
+    QPointF endMiddlePoint = getMiddlePoint(endItem);
+    QLineF line(QPointF(startItem->boundingRect().topLeft().x()+startMiddlePoint.x()-0.5,startItem->boundingRect().topLeft().y()+startMiddlePoint.y()-0.5),
+                QPointF(endItem->boundingRect().topLeft().x()+endMiddlePoint.x()-0.5,endItem->boundingRect().topLeft().y()+endMiddlePoint.y()-0.5));
     setLine(line);
 }
 
 
-/**
- * @brief Wire::paint kresli propojeni mezi porty
- * @param painter
- */
+
 void Wire::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
           QWidget *)
 {
     QPen myPen = pen();
-    painter->setBrush(Qt::black);
-    painter->setPen(QPen(Qt::black, 2));
-    QLineF line(QPointF(startItem->boundingRect().topLeft().x()+5.0,startItem->boundingRect().topLeft().y()+5.0), QPointF(endItem->boundingRect().topLeft().x()+5.0,endItem->boundingRect().topLeft().y()+5.0));
-    painter->drawLine(line);
+    painter->setBrush(QBrush(Qt::black));
+    if(hovered)
+        painter->setPen(QPen(QColor(80,80,80), 5));
+    else
+        painter->setPen(QPen(Qt::black, 3));
+    updatePosition();
+    painter->drawLine(line());
+}
+
+/**
+ * @brief Wire::hoverEnterEvent Event najeti mysi na drat
+ * @param event Event
+ */
+void Wire::hoverEnterEvent(QGraphicsSceneHoverEvent * event){
+    QString str;
+
+    if (isValueSet()){
+        str = QString::number(getValue());
+    }else{
+        str = QString("N/A");
+    }
+    str = QString("Value on wire: ") + str;
+    emit setStatusBarText(str);
+
+    hovered = true;
+    update();
+
+    QGraphicsItem::hoverEnterEvent(event);
+}
+
+/**
+ * @brief Wire::hoverLeaveEvent Event odjeti mysi z dratu
+ * @param event Event
+ */
+void Wire::hoverLeaveEvent(QGraphicsSceneHoverEvent * event){
+    emit setStatusBarText(QString("Ready"));
+    hovered = false;
+    update();
+    QGraphicsItem::hoverEnterEvent(event);
 }
