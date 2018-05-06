@@ -36,7 +36,6 @@ Wire::~Wire(){
     emit setStatusBarText(QString("Ready"));
 }
 
-
 /**
  * @brief Wire::isValueSet zjisti, jestli je na propoji nastavena hodnota
  * @return valueSet true or false podle toho jestli je hodnota nastavena
@@ -113,12 +112,20 @@ QRectF Wire::boundingRect() const
         .adjusted(-extra, -extra, extra, extra);
 }
 
+/**
+ * @brief Wire::getMiddlePoint Ziskani prostredku itemu
+ * @param item
+ * @return
+ */
 QPointF Wire::getMiddlePoint(QGraphicsItem *item){
     double width = fabs(item->boundingRect().topLeft().x() - item->boundingRect().topRight().x());
     double height = fabs(item->boundingRect().topRight().y() - item->boundingRect().bottomRight().y());
     return QPointF(width/2,height/2);
 }
 
+/**
+ * @brief Wire::updatePosition Aktualizace pozice dratu podle portu
+ */
 void Wire::updatePosition()
 {
     QPointF startMiddlePoint = getMiddlePoint(startItem);
@@ -129,7 +136,10 @@ void Wire::updatePosition()
 }
 
 
-
+/**
+ * @brief Wire::paint Vykresleni dratu
+ * @param painter Painter
+ */
 void Wire::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
           QWidget *)
 {
@@ -173,9 +183,4 @@ void Wire::hoverLeaveEvent(QGraphicsSceneHoverEvent * event){
     hovered = false;
     update();
     QGraphicsItem::hoverEnterEvent(event);
-}
-
-void Wire::mousePressEvent(QGraphicsSceneMouseEvent *event){
-    qInfo() << "wire clicked";
-    QGraphicsItem::mousePressEvent(event);
 }

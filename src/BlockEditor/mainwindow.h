@@ -60,7 +60,7 @@ private:
 
     enum ButtonType {addButton, subButton, mulButton, divButton, stepButton, runButton, moveButton, wireButton, invAButton, invBButton};
 
-    void showMsg(QString msg);
+    void showMsg(QString title, QString msg);
     void createStatusBar();
     void createToolBox();
     void createToolbar();

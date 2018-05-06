@@ -117,7 +117,10 @@ void BlockEditorScene::unEmphPort(){
 
 }
 
-
+/**
+ * @brief BlockEditorScene::setStatusBarText Nastaveni textu statusbaru
+ * @param str text
+ */
 void BlockEditorScene::setStatusBarText(QString str)
 {
     emit statusBarText(str);

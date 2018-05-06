@@ -1,7 +1,6 @@
 ////// soubor: calculator.h
 ////// autori: Vojtech Curda (xcurda02), Miroslav Bulicka (xbulic02)
 ////// Hlavickovy soubor tridy Calculator
-
 #ifndef CALCULATOR_H
 #define CALCULATOR_H
 #include <QtCore>

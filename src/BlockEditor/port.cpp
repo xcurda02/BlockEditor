@@ -87,7 +87,6 @@ Block *Port::getBlock(){
  * @brief Port::emph Zvyrazneni portu
  */
 void Port::emph(){
-
     if (!emphasized){
         QRectF rec = boundingRect();
         setRect(rec.x()-1.5, rec.y()-1.5,15,15);

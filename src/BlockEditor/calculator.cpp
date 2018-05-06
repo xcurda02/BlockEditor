@@ -107,7 +107,7 @@ bool Calculator::makeStep(double &result){
                     port->emph();       // Zvyrazneni portu
                     bool ok;
                     /* Ziskani vstupni hodnoty z dialogu */
-                    double inputValue = QInputDialog::getDouble(0, tr("QInputDialog::getDouble()"), tr("Amount:"), 37.56, -10000, 10000, 2, &ok);
+                    double inputValue = QInputDialog::getDouble(0, tr("Set input value"), tr("Amount:"), 37.56, -10000, 10000, 2, &ok);
                     port->unEmph();
                     block->unEmph();
 

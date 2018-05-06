@@ -1,7 +1,6 @@
 ////// soubor: blockeditorscene.h
 ////// autori: Vojtech Curda (xcurda02), Miroslav Bulicka (xbulic02)
 ////// Hlavickovy soubor tridy BlockEditorScene
-
 #ifndef BLOCKEDITORSCENE_H
 #define BLOCKEDITORSCENE_H
 

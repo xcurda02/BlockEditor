@@ -1,7 +1,6 @@
 ////// soubor: port.h
 ////// autori: Vojtech Curda (xcurda02), Miroslav Bulicka (xbulic02)
 ////// Soubor s definici tridy Port
-///
 #ifndef PORT_H
 #define PORT_H
 

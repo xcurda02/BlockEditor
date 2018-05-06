@@ -32,10 +32,28 @@ signals:
 public:
     Wire(Port *startItem,  Port *endItem, QGraphicsItem *parent = 0);
     ~Wire();
+
+    /**
+     * @brief redefinice typu
+     */
     enum { Type = UserType +4};
+    /**
+     * @brief Ziskani typu itemu
+     * @return typ itemu
+     */
     int type() const Q_DECL_OVERRIDE { return Type; }
     QRectF boundingRect() const Q_DECL_OVERRIDE;
+
+    /**
+     * @brief getStartItem Ziskani portu na zacatku dratu
+     * @return port na zacatku dratu
+     */
     Port *getStartItem() const { return startItem; }
+
+    /**
+     * @brief getEndItem Ziskani portu na konci dratu
+     * @return port na konci dratu
+     */
     Port *getEndItem() const { return endItem; }
     Port *getInPort();
     Port *getOutPort();
@@ -50,9 +68,6 @@ protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) Q_DECL_OVERRIDE;
     void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-
-
 
 private:
     QPointF getMiddlePoint(QGraphicsItem *item);

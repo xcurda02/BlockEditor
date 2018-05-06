@@ -63,6 +63,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/**
+ * @brief MainWindow::statusBarText Nastaveni textu statusbaru
+ * @param str text
+ */
 void MainWindow::statusBarText(QString str)
 {
     statusBar()->showMessage(str);
@@ -94,7 +98,6 @@ void MainWindow::createToolBox(){
     gridLayout->addWidget(inputsSpinBox);
     gridLayout->addWidget(createBlockButton(invBButton));
 
-
     gridLayout->setRowStretch(3, 10);
     gridLayout->setColumnStretch(2, 10);
 
@@ -112,15 +115,11 @@ void MainWindow::createToolBox(){
  */
 void MainWindow::createToolbar(){
 
-
-
     QToolButton *objMoveButton = createToolbarButton(moveButton);
     QToolButton *objWireButton = createToolbarButton(wireButton);
     QToolButton *objInvButton = createToolbarButton(invAButton);
     QToolButton *objStepButton = createToolbarButton(stepButton);
     QToolButton *objRunButton = createToolbarButton(runButton);
-
-
 
     toolbarButtonGroup = new QButtonGroup(this);
     toolbarButtonGroup->addButton(objMoveButton, int(moveButton));
@@ -142,6 +141,8 @@ void MainWindow::createToolbar(){
 
 /**
  * @brief MainWindow::toolbarButtonGroupClicked Kliknuto tlacitko toolbaru
+ * Spousteni vypoctu pri kliknuti Step, nebo Run
+ * Nastaveni modu v pripade Move, Wire
  * @param button_id     Id tlacitka
  */
 void MainWindow::toolbarButtonGroupClicked(int button_id){
@@ -158,18 +159,18 @@ void MainWindow::toolbarButtonGroupClicked(int button_id){
                     qInfo() << "Pressed Cancel:";
                 } else if(e == ZERO_DIV_EXCEPTION) {    // Deleni nulou
                     calc->setDefaultItemValues();
-                    showMsg("Dividing by zero");
+                    showMsg("Error","Dividing by zero");
                 }
                 exc = true;
             }
             if(!exc){
-                showMsg("Step result: " + QString::number(result));
+                showMsg("Notification","Step result: " + QString::number(result));
                 foreach (Block *block, scene->getBlocks()) {
                     block->unEmph();
                 }
             }
          }else
-            showMsg("Exactly one output port needs to be unwired");
+            showMsg("Invalid schema","Exactly one output port needs to be unwired");
 
     } else if(button_id == runButton){      // Tlacitko Run
         calc->setDefaultItemValues();
@@ -187,24 +188,24 @@ void MainWindow::toolbarButtonGroupClicked(int button_id){
                     if(e == CANCEL_EXCEPTION){
                         qInfo() << "Pressed Cancel:";
                     } else if(e == ZERO_DIV_EXCEPTION) {
-                        showMsg("Dividing by zero");
+                        showMsg("Error","Dividing by zero");
                     }
                     exc = true;
                 }
                 calc->setDefaultItemValues();
                 if (!exc){
-                    showMsg("Final result: " + QString::number(result));
+                    showMsg("Notification", "Final result: " + QString::number(result));
                 }
                 foreach (Block *block, scene->getBlocks()) {
                     block->unEmph();
                 }
 
             }else{
-                showMsg("Exactly one output port needs to be unwired");
+                showMsg("Invalid schema","Exactly one output port needs to be unwired");
             }
 
         } else {
-            showMsg("A cycle in schema detected");
+            showMsg("Invalid schema","Cycle detected");
         }
     }else{
         /* Pro tlacitka Move(ID=6) a Wire(ID=7) v mnozine mode MoveBlock(1) InsertWire(2) proto -5 k ID */
@@ -215,11 +216,14 @@ void MainWindow::toolbarButtonGroupClicked(int button_id){
 
 /**
  * @brief MainWindow::showMsg Vypsani zpravy v dialogovem okne
+ * @param title Titulek okna
  * @param msg   Retezec zpravy
  */
-void MainWindow::showMsg(QString msg){
+void MainWindow::showMsg(QString title,QString msg){
     QMessageBox msgBox;
     msgBox.setText(msg);
+    msgBox.setWindowTitle(title);
+    msgBox.setMinimumWidth(200);
     msgBox.exec();
 }
 
@@ -314,7 +318,6 @@ QAbstractButton *MainWindow::createBlockButton(ButtonType buttonType){
 
 }
 
-
 /**
  * @briefMainWindow::closeEvent upravuje close event. Pred ukoncenim se pta na ulozeni souboru
  * @param event close event
@@ -357,7 +360,6 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAction);            //pridani akci do teto zalozky
     fileMenu->addAction(openAction);
 
-
     aboutMenu = menuBar()->addMenu(tr("&Help"));    //vytvoreni zalozky help
     aboutMenu->addAction(aboutAction);              //pridani akce about do teto zalozky
 }
@@ -367,8 +369,8 @@ void MainWindow::createMenus()
  */
 void MainWindow::about()
 {
-    QMessageBox::about(this, tr("About Block Editor"),
-                       tr("This is Block Editor."));
+    QMessageBox::about(this, tr("About"),
+                       tr("Authors: Vojtěch Čurda, Miroslav Bulička\n\nC++ Seminar - semestral project\n\nBrno University of Technology,\nFaculty of Information Technology\n\nTools used: Qt 5.5"));
 }
 
 /**
