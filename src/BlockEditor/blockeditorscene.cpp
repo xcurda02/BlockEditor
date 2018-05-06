@@ -172,12 +172,8 @@ void BlockEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
             case MoveBlock:
                 QGraphicsScene::mousePressEvent(mouseEvent);
                 break;
-
         }
-
-
     }
-
 }
 
 
