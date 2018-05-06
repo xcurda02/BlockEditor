@@ -178,7 +178,11 @@ void MainWindow::toolbarButtonGroupClicked(int button_id){
                 double result;
                 bool exc = false;
                 try{
-                    while(calc->makeStep(result)){}         // Provadeni kroku
+                    while(calc->makeStep(result)){   // Provadeni kroku
+                        foreach (Block *block, scene->getBlocks()) {
+                            block->unEmph();
+                        }
+                    }
                 }catch(int e){
                     if(e == CANCEL_EXCEPTION){
                         qInfo() << "Pressed Cancel:";
@@ -190,6 +194,9 @@ void MainWindow::toolbarButtonGroupClicked(int button_id){
                 calc->setDefaultItemValues();
                 if (!exc){
                     showMsg("Final result: " + QString::number(result));
+                }
+                foreach (Block *block, scene->getBlocks()) {
+                    block->unEmph();
                 }
 
             }else{
