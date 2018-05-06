@@ -31,7 +31,7 @@ signals:
     void setStatusBarText(QString str);
 public:
     Wire(Port *startItem,  Port *endItem, QGraphicsItem *parent = 0);
-
+    ~Wire();
     enum { Type = UserType +4};
     int type() const Q_DECL_OVERRIDE { return Type; }
     QRectF boundingRect() const Q_DECL_OVERRIDE;
@@ -50,6 +50,8 @@ protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) Q_DECL_OVERRIDE;
     void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
 
 
 private:

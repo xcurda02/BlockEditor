@@ -286,6 +286,10 @@ void BlockEditorScene::keyPressEvent(QKeyEvent *keyEvent){
             removeItem(block);
             delete block;
 
+        } else if (selectedItems().count() && selectedItems().first()->type() == Wire::Type){
+            Wire *wire= qgraphicsitem_cast<Wire *>(selectedItems().first());
+            removeItem(wire);
+            delete wire;
         }
     }
 }

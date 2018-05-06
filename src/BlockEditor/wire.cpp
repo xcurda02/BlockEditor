@@ -22,11 +22,20 @@ Wire::Wire(Port *startItem,  Port *endItem, QGraphicsItem *parent)
        this->endItem = endItem;
        valueSet = false;
        setAcceptHoverEvents(true);
+       setFlag(QGraphicsItem::ItemIsSelectable, true);
        hovered = false;
        setZValue(getLowerPortZValue()-0.1);
-
-
 }
+
+/**
+ * @brief Wire::~Wire Destruktor tridy Wire - odnastaveni dratu na portech
+ */
+Wire::~Wire(){
+    startItem->removeWire();
+    endItem->removeWire();
+    emit setStatusBarText(QString("Ready"));
+}
+
 
 /**
  * @brief Wire::isValueSet zjisti, jestli je na propoji nastavena hodnota
@@ -164,4 +173,9 @@ void Wire::hoverLeaveEvent(QGraphicsSceneHoverEvent * event){
     hovered = false;
     update();
     QGraphicsItem::hoverEnterEvent(event);
+}
+
+void Wire::mousePressEvent(QGraphicsSceneMouseEvent *event){
+    qInfo() << "wire clicked";
+    QGraphicsItem::mousePressEvent(event);
 }

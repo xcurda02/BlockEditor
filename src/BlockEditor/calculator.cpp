@@ -193,7 +193,7 @@ double Calculator::calculate(QList<double> &values, Block::BlockType blockType){
  */
 bool Calculator::noCycles(){
 
-    foreach (Block *block, getLevel1Blocks()) {
+    foreach (Block *block, scene->getBlocks()) {
         Block *iterBlock = block;                           // Promenna bloku ktera bude iterovat skrze schema
         Wire *wire = iterBlock->getOutPort()->getWire();
         while (wire != NULL) {

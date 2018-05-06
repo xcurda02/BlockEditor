@@ -155,7 +155,7 @@ void MainWindow::toolbarButtonGroupClicked(int button_id){
                 }
             }catch(int e){
                 if(e == CANCEL_EXCEPTION){              // Zmacknut Cancel pri zadavani hodnoty
-                    qInfo() << "Pressed Cancel:" << result;
+                    qInfo() << "Pressed Cancel:";
                 } else if(e == ZERO_DIV_EXCEPTION) {    // Deleni nulou
                     calc->setDefaultItemValues();
                     showMsg("Dividing by zero");
@@ -181,7 +181,7 @@ void MainWindow::toolbarButtonGroupClicked(int button_id){
                     while(calc->makeStep(result)){}         // Provadeni kroku
                 }catch(int e){
                     if(e == CANCEL_EXCEPTION){
-                        qInfo() << "Pressed Cancel:" << result;
+                        qInfo() << "Pressed Cancel:";
                     } else if(e == ZERO_DIV_EXCEPTION) {
                         showMsg("Dividing by zero");
                     }
